@@ -4,17 +4,27 @@ using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using System.Threading.Tasks;
+using UnityEngine.UI;
+using TMPro;
+
 
 public class UnityAuthentication : MonoBehaviour
 {
+    // Declare all input filled
+    [SerializeField] GameObject lg_usernamefield;
+    [SerializeField] GameObject lg_passwordfield;
+    [SerializeField] GameObject rg_usernamefield;
+    [SerializeField] GameObject rg_passwordfield;
+    [SerializeField] GameObject rg_repeatpasswordfield;
+
 
     private async void Start()
     {
         // UnityServices.InitializeAsync() will initialize all services that are subscribed to Core.
         await UnityServices.InitializeAsync();
         Debug.Log(UnityServices.State);
+        Debug.Log(AuthenticationService.Instance.IsSignedIn);
         SetupEvents();
-        await SignInAnonymouslyAsync();
     }
 
     // Setup authentication event handlers if desired
@@ -27,6 +37,8 @@ public class UnityAuthentication : MonoBehaviour
 
             // Show how to get an access token
             Debug.Log($"Access Token: {AuthenticationService.Instance.AccessToken}");
+
+            // Load Cloud Save data if player is not anonymous
 
         };
 
@@ -46,7 +58,8 @@ public class UnityAuthentication : MonoBehaviour
         };
     }
 
-    async Task SignInAnonymouslyAsync()
+
+    public async Task SignInAnonymouslyAsync()
     {
         try
         {
@@ -98,7 +111,7 @@ public class UnityAuthentication : MonoBehaviour
     {
         try
         {
-            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync($"{username}", password);  
+            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync($"{username}", password);
             Debug.Log("SignIn is successful.");
         }
         catch (AuthenticationException ex)
@@ -190,6 +203,75 @@ public class UnityAuthentication : MonoBehaviour
             Debug.LogException(ex);
         }
     }
+
+
+
+    #region Manage Login By AN the NoobDev
+
+    // Sign In as guest
+    public async void OnSignInAsGuest()
+    {
+        await SignInAnonymouslyAsync();
+        Debug.Log(AuthenticationService.Instance.IsSignedIn);
+    }
+
+    // Register account
+    public async void OnSignupBtnClicked()
+    {
+        var username = rg_usernamefield.GetComponent<TMP_InputField>().text;
+        var password = rg_passwordfield.GetComponent<TMP_InputField>().text;
+        var repeatpassword = rg_repeatpasswordfield.GetComponent<TMP_InputField>().text;
+
+        //if (username == null || password == null || repeatpassword == null)
+        //{
+        //    Debug.LogError("Username and password can't be empty!!!");
+        //    return;
+        //}
+
+        if (password != repeatpassword)
+        {
+            Debug.LogError("Password and Repeat Password are not identical!!!");
+            return;
+        }
+        else
+        {
+            await SignUpWithUsernamePassword(username, password);
+        }
+
+
+    }
+
+    // Login account
+
+    public async void OnLoginBtnClicked()
+    {
+        var username = lg_usernamefield.GetComponent<TMP_InputField>().text;
+        var password = lg_passwordfield.GetComponent<TMP_InputField>().text;
+
+        await SignInWithUsernamePasswordAsync(username, password);
+
+    }
+
+    //Log out
+    [ContextMenu("Log out")]
+    public void OnLogOutBtnClicked()
+    {
+
+        AuthenticationService.Instance.SignOut();
+        AuthenticationService.Instance.ClearSessionToken();
+
+    }
+
+    [ContextMenu("Check Is Login")]
+    public void CheckIsLogIn()
+    {
+
+        Debug.Log(AuthenticationService.Instance.IsSignedIn);
+
+    }
+
+    #endregion
+
 
 
 
