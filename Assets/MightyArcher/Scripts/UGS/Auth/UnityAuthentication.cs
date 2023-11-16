@@ -6,7 +6,7 @@ using Unity.Services.Authentication;
 using System.Threading.Tasks;
 using UnityEngine.UI;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class UnityAuthentication : MonoBehaviour
 {
@@ -39,7 +39,9 @@ public class UnityAuthentication : MonoBehaviour
             Debug.Log($"Access Token: {AuthenticationService.Instance.AccessToken}");
 
             // Load Cloud Save data if player is not anonymous
+            SceneManager.LoadScene("Menu");
 
+            // Change Scene
         };
 
         AuthenticationService.Instance.SignInFailed += (err) =>
@@ -82,6 +84,13 @@ public class UnityAuthentication : MonoBehaviour
             // Notify the player with the proper error message
             Debug.LogException(ex);
         }
+        //finally
+        //{
+        //    if (AuthenticationService.Instance.IsSignedIn)
+        //    {
+        //        SceneManager.LoadScene("Menu");
+        //    }
+        //}
     }
 
 
@@ -126,6 +135,13 @@ public class UnityAuthentication : MonoBehaviour
             // Notify the player with the proper error message
             Debug.LogException(ex);
         }
+        //finally
+        //{
+        //    if (AuthenticationService.Instance.IsSignedIn)
+        //    {
+        //        SceneManager.LoadScene("Menu");
+        //    }
+        //}
     }
 
     async Task AddUsernamePasswordAsync(string username, string password)

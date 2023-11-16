@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/MightyArcher/Scenes/Authentication.unity
+    guid: f61addc9117109b49a52761532c09b97
+  - enabled: 1
+    path: Assets/MightyArcher/Scenes/Menu.unity
+    guid: 922b9e444a2f5e34ebeabfaf18df8935
+  - enabled: 1
+    path: Assets/MightyArcher/Scenes/SimpleMatching.unity
+    guid: 6bf53224402370447add1ee3b0267458
   m_configObjects: {}
