@@ -3,7 +3,26 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - enemy
+  - enemyLeg
+  - enemyBody
+  - enemyHead
+  - ground
+  - arrow
+  - axe
+  - bomb
+  - bird
+  - explosion
+  - playerLeg
+  - playerBody
+  - playerHead
+  - player2
+  - uiCamera
+  - rock
+  - playerLegR
+  - playerBodyR
+  - playerHeadR
   layers:
   - Default
   - TransparentFX
