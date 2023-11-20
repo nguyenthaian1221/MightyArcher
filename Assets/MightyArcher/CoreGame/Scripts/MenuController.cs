@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.SceneManagement;
-
+using Unity.Netcode;
 
 public class MenuController : MonoBehaviour
 {
@@ -40,6 +40,8 @@ public class MenuController : MonoBehaviour
         coinLabel.GetComponent<TextMesh>().text = PlayerPrefs.GetInt("PlayerCoins", 0).ToString();
 
     }
+
+
 
 
     //*****************************************************************************
@@ -109,6 +111,18 @@ public class MenuController : MonoBehaviour
                     SceneManager.LoadScene("GameWithPlayer");             //Load the next scene
                     break;
 
+
+                case "Button-04":
+                    //gameMode = 4;
+                    //PlayerPrefs.SetInt("GAMEMODE", gameMode);
+                    playSfx(tapSfx);                            //play touch sound
+                    StartCoroutine(animateButton(objectHit));   //touch animation effect
+                    yield return new WaitForSeconds(1.0f);      //Wait for the animation to end
+                    SceneManager.LoadScene("MultimapTest");             //Load the next scene
+                    break;
+
+
+
             }
 
         }
@@ -166,5 +180,9 @@ public class MenuController : MonoBehaviour
             GetComponent<AudioSource>().Play();
         }
     }
+
+    //*****************************************************************************
+    // Network related functions
+    //*****************************************************************************
 
 }

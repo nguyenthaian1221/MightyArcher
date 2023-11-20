@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MightyArcher/CoreGame/Scenes/Menu.unity
     guid: bedbc736ed11ea14b88758b1f3b3537d
+  - enabled: 1
+    path: Assets/MightyArcher/CoreGame/Scenes/MultimapTest.unity
+    guid: 7fce2d31cf352104caf0a4ea986a49aa
   m_configObjects: {}
