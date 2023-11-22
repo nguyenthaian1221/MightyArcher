@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.SceneManagement;
-using Unity.Netcode;
+
 
 public class MenuController : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class MenuController : MonoBehaviour
 
     void Awake()
     {
-     
+
         //debug
         //PlayerPrefs.DeleteAll();
 
@@ -40,8 +40,6 @@ public class MenuController : MonoBehaviour
         coinLabel.GetComponent<TextMesh>().text = PlayerPrefs.GetInt("PlayerCoins", 0).ToString();
 
     }
-
-
 
 
     //*****************************************************************************
@@ -118,7 +116,10 @@ public class MenuController : MonoBehaviour
                     playSfx(tapSfx);                            //play touch sound
                     StartCoroutine(animateButton(objectHit));   //touch animation effect
                     yield return new WaitForSeconds(1.0f);      //Wait for the animation to end
-                    SceneManager.LoadScene("MultimapTest");             //Load the next scene
+                    //SceneManager.LoadScene("MultimapTest");             //Load the next scene
+                    // Load the menu of multiplay scene
+                    LoadingSceneManager.Instance.LoadScene("MultiplayMenu", false);
+
                     break;
 
 
@@ -181,8 +182,5 @@ public class MenuController : MonoBehaviour
         }
     }
 
-    //*****************************************************************************
-    // Network related functions
-    //*****************************************************************************
 
 }

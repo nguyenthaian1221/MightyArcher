@@ -5,12 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/MightyArcher/Scenes/Authentication.unity
-    guid: f61addc9117109b49a52761532c09b97
-  - enabled: 0
-    path: Assets/MightyArcher/Scenes/SimpleMatching.unity
-    guid: 6bf53224402370447add1ee3b0267458
+  - enabled: 1
+    path: Assets/MightyArcher/CoreGame/Scenes/Menu.unity
+    guid: bedbc736ed11ea14b88758b1f3b3537d
   - enabled: 1
     path: Assets/MightyArcher/CoreGame/Scenes/BirdHunt.unity
     guid: ea506868a43db6f46ad524a5443c1f38
@@ -27,9 +24,12 @@ EditorBuildSettings:
     path: Assets/MightyArcher/CoreGame/Scenes/Init.unity
     guid: ae8fd455411c85a458c6581f1d53c610
   - enabled: 1
-    path: Assets/MightyArcher/CoreGame/Scenes/Menu.unity
-    guid: bedbc736ed11ea14b88758b1f3b3537d
-  - enabled: 1
-    path: Assets/MightyArcher/CoreGame/Scenes/MultimapTest.unity
+    path: Assets/MightyArcher/CoreGame/Scenes/MultiplayMenu.unity
     guid: 7fce2d31cf352104caf0a4ea986a49aa
+  - enabled: 1
+    path: Assets/MightyArcher/Scenes/CharacterSelection.unity
+    guid: bf970a51a5205704fbafc4770b2ac372
+  - enabled: 1
+    path: Assets/MightyArcher/Scenes/GameMultiplay.unity
+    guid: 3edda225cb33f7949ad97c666cef4ac6
   m_configObjects: {}
