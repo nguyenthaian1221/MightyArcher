@@ -18,12 +18,12 @@ public class TypescriptEffect : MonoBehaviour
 
 
 
-    private TextMeshPro _textUI;
+    private TextMeshProUGUI _textUI;
 
     private void OnEnable()
     {
         // Get the components needed for animating the text
-        _textUI = GetComponent<TextMeshPro>();
+        _textUI = GetComponent<TextMeshProUGUI>();
         StartCoroutine(Effect());
     }
 
