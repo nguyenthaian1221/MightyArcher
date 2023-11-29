@@ -65,15 +65,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45c66234674f084ba478347bd39e97f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charactersData: []
-  m_charactersContainers: []
+  charDB: {fileID: 11400000, guid: fccaa29d5f995ef4b8c5ee7a13b9d531, type: 2}
+  charactersData:
+  - {fileID: 11400000, guid: 6ae4dadddfef46f4c9bd5b4a5e60800e, type: 2}
+  - {fileID: 11400000, guid: 58b564c9d71976a4884d4fddb101c340, type: 2}
+  m_charactersContainers:
+  - imageContainer: {fileID: 0}
+    nameContainer: {fileID: 0}
+    iconReady: {fileID: 0}
+    waitingText: {fileID: 0}
+  - imageContainer: {fileID: 0}
+    nameContainer: {fileID: 0}
+    iconReady: {fileID: 0}
+    waitingText: {fileID: 0}
   m_readyButton: {fileID: 0}
   m_cancelButton: {fileID: 0}
   m_timeToStartGame: 1
   m_nextScene: GameMultiplay
-  m_clientColor: {r: 0.8962264, g: 0.785965, b: 0.26633143, a: 0}
-  m_playerColor: {r: 0.092317976, g: 0.04743683, b: 0.7735849, a: 0}
-  m_playerStates: []
+  m_playerStates:
+  - playerState: 1
+    playerObject: {fileID: 0}
+    playerName: 
+    clientId: 0
+    idOfCharSelectd: 0
+  - playerState: 1
+    playerObject: {fileID: 0}
+    playerName: 
+    clientId: 0
+    idOfCharSelectd: 0
   m_playerPrefab: {fileID: 8566576831115099113, guid: 273333352d1e9f6499d428e476950215, type: 3}
   m_confirmClip: {fileID: 0}
   m_cancelClip: {fileID: 0}

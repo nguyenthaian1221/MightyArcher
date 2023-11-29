@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,18 +8,15 @@ public class PlayerCharSelection : NetworkBehaviour
 {
     public int CharSelected => m_charSelected.Value;
 
-    private const int k_noCharacterSelectedValue = -1;
+    private const int k_noCharacterSelectedValue = -1;  //  default value 
 
     [SerializeField]
-    private NetworkVariable<int> m_charSelected =
+    private NetworkVariable<int> m_charSelected =                              // ID of character 
         new NetworkVariable<int>(k_noCharacterSelectedValue);
 
     [SerializeField]
-    private NetworkVariable<int> m_playerId =
+    private NetworkVariable<int> m_playerId =                                     //ID of players. host = player0, client = player 1 
         new NetworkVariable<int>(k_noCharacterSelectedValue);
-
-    //[SerializeField]
-    //private AudioClip _changedCharacterClip;
 
     private void Start()
     {
@@ -32,8 +31,9 @@ public class PlayerCharSelection : NetworkBehaviour
                 m_charSelected.Value,
                 IsOwner);
         }
-
+        //Debug.Log(m_charSelected.Value);
         // Assign the name of the object base on the player id on every instance
+        Debug.Log(m_playerId.Value);
         gameObject.name = $"Player{m_playerId.Value + 1}";
     }
 
@@ -56,12 +56,18 @@ public class PlayerCharSelection : NetworkBehaviour
         OnButtonPress.a_OnButtonPress -= OnUIButtonPress;
     }
 
-    private void OnPlayerIdSet(int oldValue, int newValue)
+    private void OnPlayerIdSet(int oldValue, int newValue)  //khoi tao chon 0
     {
-        CharacterSelectionManager.Instance.SetPlayebleChar(newValue, newValue, IsOwner);
+
+        CharacterSelectionManager.Instance.SetPlayebleChar(newValue, 0, IsOwner);
+
+        //if (IsServer)
+        //    m_charSelectedHost.Value = newValue; // re asign value for host user
+
 
         if (IsServer)
-            m_charSelected.Value = newValue;
+            m_charSelected.Value = 0; // re asign value for host user
+
     }
 
     // Event call when server changes the network variable
@@ -90,33 +96,33 @@ public class PlayerCharSelection : NetworkBehaviour
 
         if (IsOwner)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
+            //if (Input.GetKeyDown(KeyCode.Space))
+            //{
 
-                // Check that the character is not selected
-                if (!CharacterSelectionManager.Instance.IsReady(m_charSelected.Value))
-                {
-                    CharacterSelectionManager.Instance.SetPlayerReadyUIButtons(
-                        true,
-                        m_charSelected.Value);
+            //    // Check that the character is not selected
+            //    if (!CharacterSelectionManager.Instance.IsReady(m_charSelected.Value))
+            //    {
+            //        CharacterSelectionManager.Instance.SetPlayerReadyUIButtons(
+            //            true,
+            //            m_charSelected.Value);
 
-                    ReadyServerRpc();
-                }
-                else
-                {
-                    // if selected check if is selected by me
-                    if (CharacterSelectionManager.Instance.IsSelectedByPlayer(
-                            m_playerId.Value, m_charSelected.Value))
-                    {
-                        // If it's selected by me, de-select
-                        CharacterSelectionManager.Instance.SetPlayerReadyUIButtons(
-                            false,
-                            m_charSelected.Value);
+            //        ReadyServerRpc();
+            //    }
+            //    else
+            //    {
+            //        // if selected check if is selected by me
+            //        if (CharacterSelectionManager.Instance.IsSelectedByPlayer(
+            //                m_playerId.Value, m_charSelected.Value))
+            //        {
+            //            // If it's selected by me, de-select
+            //            CharacterSelectionManager.Instance.SetPlayerReadyUIButtons(
+            //                false,
+            //                m_charSelected.Value);
 
-                        NotReadyServerRpc();
-                    }
-                }
-            }
+            //            NotReadyServerRpc();
+            //        }
+            //    }
+            //}
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -167,10 +173,10 @@ public class PlayerCharSelection : NetworkBehaviour
         int charTemp = m_charSelected.Value;
         charTemp += value;
 
-        if (charTemp >= CharacterSelectionManager.Instance.charactersData.Length)
+        if (charTemp >= CharacterSelectionManager.Instance.charDB.characterCount)
             charTemp = 0;
         else if (charTemp < 0)
-            charTemp = CharacterSelectionManager.Instance.charactersData.Length - 1;
+            charTemp = CharacterSelectionManager.Instance.charDB.characterCount - 1;
 
         if (IsOwner)
         {
@@ -228,6 +234,35 @@ public class PlayerCharSelection : NetworkBehaviour
                     m_charSelected.Value);
 
                 NotReadyServerRpc();
+                break;
+            case ButtonActions.client_back:                     // Why we can do this? Because we already hide it before
+                                                                // change value                                                           
+                if (IsOwner && CharacterSelectionManager.Instance.GetConnectionState(m_playerId.Value) != ConnectionState.ready)
+                {
+                   
+                        ChangeCharacterSelection(-1);
+                }
+                break;
+            case ButtonActions.client_next:
+                if (IsOwner && CharacterSelectionManager.Instance.GetConnectionState(m_playerId.Value) != ConnectionState.ready)
+                {
+                    ChangeCharacterSelection(1);
+                }
+                break;
+            case ButtonActions.host_next:
+                if (IsOwner && CharacterSelectionManager.Instance.GetConnectionState(m_playerId.Value) != ConnectionState.ready)
+                {
+                    ChangeCharacterSelection(1);
+
+                }
+                break;
+            case ButtonActions.host_back:
+                if (IsOwner && CharacterSelectionManager.Instance.GetConnectionState(m_playerId.Value) != ConnectionState.ready)
+                {
+
+                    ChangeCharacterSelection(-1);
+
+                }
                 break;
         }
     }

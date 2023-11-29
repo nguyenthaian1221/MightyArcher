@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1017731994088947026}
   - component: {fileID: 1017731994088947117}
   - component: {fileID: 1017731994088947027}
+  - component: {fileID: 5655997876677948272}
   m_Layer: 0
   m_Name: ClientConnectionManager
   m_TagString: Untagged
@@ -45,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2523299105
+  GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -66,3 +67,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxConnections: 2
+  m_characterDatas:
+  - {fileID: 11400000, guid: 6ae4dadddfef46f4c9bd5b4a5e60800e, type: 2}
+  - {fileID: 11400000, guid: 58b564c9d71976a4884d4fddb101c340, type: 2}
+--- !u!114 &5655997876677948272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017731994088947116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7660d3b47480db041ad06259af5ef6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  btnBackHost: {fileID: 0}
+  btnNextHost: {fileID: 0}
+  btnBackClient: {fileID: 0}
+  btnNextClient: {fileID: 0}

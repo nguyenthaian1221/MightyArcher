@@ -8,8 +8,8 @@ public class CharacterDatabase : ScriptableObject
 {
     public Character[] character;
     //[Header("Client Info")]
-    //public ulong clientId;                  // The clientId who selected this character
-    //public int playerId;                    // With player is [1,2,3,4] -> more in case more player can play
+    //public ulong[] clientId;                  // The clientId who selected this character
+    //public int[] playerId;                    // With player is [1,2,3,4] -> more in case more player can play
 
 
 

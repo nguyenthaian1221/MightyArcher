@@ -16,6 +16,8 @@ MonoBehaviour:
   - characterName: AN
     characterSprite: {fileID: 21300000, guid: 122bf4126a9046347a82ad850312f8f4, type: 3}
     charID: 1
+    isOwned: 1
   - characterName: LAN
     characterSprite: {fileID: 21300000, guid: b7846e46775fd8f438cf86270b97d98f, type: 3}
     charID: 2
+    isOwned: 1

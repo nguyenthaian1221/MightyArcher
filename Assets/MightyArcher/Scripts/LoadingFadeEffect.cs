@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,9 @@ public class LoadingFadeEffect : SingletonPersistent<LoadingFadeEffect>
     [SerializeField]
     [Range(0f, 0.5f)]
     float m_loadingStepValue;           // The value to modify the alpha every steo time
+
+    public Action fadeOutCompleted;
+
 
     // Run the complete effect, use for the clients
     IEnumerator FadeAllEffect()
@@ -88,6 +92,8 @@ public class LoadingFadeEffect : SingletonPersistent<LoadingFadeEffect>
 
         // Turn of the background image
         m_loadingBackground.gameObject.SetActive(false);
+
+        fadeOutCompleted?.Invoke();
     }
 
     // Start the fade-in effect
@@ -100,6 +106,7 @@ public class LoadingFadeEffect : SingletonPersistent<LoadingFadeEffect>
     public void FadeOut()
     {
         StartCoroutine(FadeOutEffect());
+
     }
 
     // Start a complete fade effect

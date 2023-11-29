@@ -44,7 +44,7 @@ public class LoadingSceneManager : SingletonPersistent<LoadingSceneManager>
         // In case the scene is heavy instead we should use additive loading to wait for the
         // scene to load before we continue
         yield return new WaitForSeconds(1f);
-
+        
         LoadingFadeEffect.Instance.FadeOut();
     }
 

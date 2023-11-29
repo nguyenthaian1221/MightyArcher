@@ -6,7 +6,11 @@ using System;
 public enum ButtonActions : byte
 {
     lobby_ready,
-    lobby_not_ready
+    lobby_not_ready,
+    host_next,
+    host_back,
+    client_next,
+    client_back
 }
 
 

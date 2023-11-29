@@ -21,15 +21,12 @@ EditorBuildSettings:
     path: Assets/MightyArcher/CoreGame/Scenes/GameWithPlayer.unity
     guid: 8db2d3469bdf2ee41b68ca81e17d2ceb
   - enabled: 1
-    path: Assets/MightyArcher/CoreGame/Scenes/Init.unity
-    guid: ae8fd455411c85a458c6581f1d53c610
-  - enabled: 1
     path: Assets/MightyArcher/CoreGame/Scenes/MultiplayMenu.unity
     guid: 7fce2d31cf352104caf0a4ea986a49aa
   - enabled: 1
     path: Assets/MightyArcher/Scenes/CharacterSelection.unity
     guid: bf970a51a5205704fbafc4770b2ac372
   - enabled: 1
-    path: Assets/MightyArcher/Scenes/GameMultiplay.unity
-    guid: 3edda225cb33f7949ad97c666cef4ac6
+    path: Assets/MightyArcher/CoreGame/Scenes/GameMultiplay.unity
+    guid: a902361efe7baae478d17ca74d3af114
   m_configObjects: {}

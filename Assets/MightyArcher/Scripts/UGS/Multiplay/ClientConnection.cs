@@ -7,8 +7,8 @@ public class ClientConnection : SingletonNetwork<ClientConnection>
     [SerializeField]
     private int m_maxConnections;
 
-    //[SerializeField]
-    //private CharacterDataSO[] m_characterDatas;
+    [SerializeField]
+    private CharacterDataSO[] m_characterDatas;
 
     // This is a check for some script that depends on the client where it leaves
     // to check if this was a client that should no be allowed an there for the code should not run
@@ -48,11 +48,39 @@ public class ClientConnection : SingletonNetwork<ClientConnection>
                 print($"Sorry we are full {clientId}");
                 return false;
             }
+            print($"You are allowed to enter {clientId}");
+            return true;
+        }
+        else   // prevent another join after gameplay started
+        {
 
+            if (ItHasACharacterSelected(clientId))
+            {
+                print($"You are allowed to enter {clientId}");
+                return true;
+            }
+            else
+            {
+                print($"Sorry we are full {clientId}");
+                return false;
+            }
         }
 
-        print($"You are allowed to enter {clientId}");
-        return true;
+      
+    }
+
+
+    private bool ItHasACharacterSelected(ulong clientId)
+    {
+        foreach (var data in m_characterDatas)
+        {
+            if (data.clientId == clientId)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // In case the client is not allowed to enter, remove the client for the session
