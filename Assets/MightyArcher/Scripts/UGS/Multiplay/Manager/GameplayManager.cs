@@ -7,10 +7,13 @@ using UnityEngine;
 
 public class GameplayManager : SingletonNetwork<GameplayManager>
 {
-    //public static Action<ulong> OnPlayerDefeated;
+    public static Action<ulong> OnPlayerDefeated;
 
-    //[SerializeField]
-    //private CharacterDataSO[] m_charactersData;
+    [SerializeField]
+    private CharacterDataSO[] m_charactersData;
+
+    [SerializeField]
+    private CharacterDatabase charsDB;
 
     //[SerializeField]
     //private PlayerUI[] m_playersUI;
@@ -18,36 +21,42 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
     //[SerializeField]
     //private GameObject m_deathUI;
 
-    //[SerializeField]
-    //private Transform[] m_shipStartingPositions;
+    [SerializeField]
+    private Transform[] m_startingPositions;
 
     //private int m_numberOfPlayerConnected;
-    //private List<ulong> m_connectedClients = new List<ulong>();
+    private List<ulong> m_connectedClients = new List<ulong>();
     //private List<PlayerShipController> m_playerShips = new List<PlayerShipController>();
 
-    //private void OnEnable()
-    //{
-    //    if (!IsServer)
-    //        return;
+    //ControllerLeft
 
-    //    OnPlayerDefeated += PlayerDeath;
-    //    NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-    //}
+    //ControllerRight
 
-    //private void OnDisable()
-    //{
-    //    if (!IsServer)
-    //        return;
+    // HP UI
 
-    //    OnPlayerDefeated -= PlayerDeath;
+    private void OnEnable()
+    {
+        if (!IsServer)
+            return;
 
-    //    // Since the NetworkManager could potentially be destroyed before this component, only
-    //    // remove the subscriptions if that singleton still exists.
-    //    if (NetworkManager.Singleton != null)
-    //    {
-    //        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
-    //    }
-    //}
+        //OnPlayerDefeated += PlayerDeath;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+    }
+
+    private void OnDisable()
+    {
+        if (!IsServer)
+            return;
+
+        //OnPlayerDefeated -= PlayerDeath;
+
+        // Since the NetworkManager could potentially be destroyed before this component, only
+        // remove the subscriptions if that singleton still exists.
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+        }
+    }
 
     //public void PlayerDeath(ulong clientId)
     //{
@@ -66,19 +75,19 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
     //}
 
     //// Event to check when a player disconnects
-    //private void OnClientDisconnect(ulong clientId)
-    //{
-    //    foreach (var player in m_playerShips)
-    //    {
-    //        if (player != null)
-    //        {
-    //            if (player.characterData.clientId == clientId)
-    //            {
-    //                player.Hit(999); // Do critical damage
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnClientDisconnect(ulong clientId)
+    {
+        //foreach (var player in m_playerShips)
+        //{
+        //    if (player != null)
+        //    {
+        //        if (player.characterData.clientId == clientId)
+        //        {
+        //            player.Hit(999); // Do critical damage
+        //        }
+        //    }
+        //}
+    }
 
     //[ClientRpc]
     //private void ActivateDeathUIClientRpc(ulong clientId)
@@ -89,14 +98,14 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
     //    }
     //}
 
-    //[ClientRpc]
-    //private void LoadClientRpc()
-    //{
-    //    if (IsServer)
-    //        return;
+    [ClientRpc]
+    private void LoadClientRpc()
+    {
+        if (IsServer)
+            return;
 
-    //    LoadingFadeEffect.Instance.FadeAll();
-    //}
+        LoadingFadeEffect.Instance.FadeAll();
+    }
 
     //[ClientRpc]
     //private void SetPlayerUIClientRpc(int charIndex, string playerShipName)
@@ -119,32 +128,32 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
     //    playerShipController.playerUI = m_playersUI[m_charactersData[charIndex].playerId];
     //}
 
-    //private IEnumerator HostShutdown()
-    //{
-    //    // Tell the clients to shutdown
-    //    ShutdownClientRpc();
+    private IEnumerator HostShutdown()
+    {
+        // Tell the clients to shutdown
+        ShutdownClientRpc();
 
-    //    // Wait some time for the message to get to clients
-    //    yield return new WaitForSeconds(0.5f);
+        // Wait some time for the message to get to clients
+        yield return new WaitForSeconds(0.5f);
 
-    //    // Shutdown server/host
-    //    Shutdown();
-    //}
+        // Shutdown server/host
+        Shutdown();
+    }
 
-    //private void Shutdown()
-    //{
-    //    NetworkManager.Singleton.Shutdown();
-    //    LoadingSceneManager.Instance.LoadScene(SceneName.Menu, false);
-    //}
+    private void Shutdown()
+    {
+        NetworkManager.Singleton.Shutdown();
+        LoadingSceneManager.Instance.LoadScene("Menu", false);
+    }
 
-    //[ClientRpc]
-    //private void ShutdownClientRpc()
-    //{
-    //    if (IsServer)
-    //        return;
+    [ClientRpc]
+    private void ShutdownClientRpc()
+    {
+        if (IsServer)
+            return;
 
-    //    Shutdown();
-    //}
+        Shutdown();
+    }
 
     //public void BossDefeat()
     //{
@@ -152,62 +161,73 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
     //    LoadingSceneManager.Instance.LoadScene(SceneName.Victory);
     //}
 
-    //public void ExitToMenu()
-    //{
-    //    if (IsServer)
-    //    {
-    //        StartCoroutine(HostShutdown());
-    //    }
-    //    else
-    //    {
-    //        NetworkManager.Singleton.Shutdown();
-    //        LoadingSceneManager.Instance.LoadScene(SceneName.Menu, false);
-    //    }
-    //}
+    public void ExitToMenu()
+    {
+        if (IsServer)
+        {
+            StartCoroutine(HostShutdown());
+        }
+        else
+        {
+            NetworkManager.Singleton.Shutdown();
+            LoadingSceneManager.Instance.LoadScene("Menu", false);
+        }
+    }
 
     //// So this method is called on the server each time a player enters the scene.
     //// Because of that, if we create the ship when a player connects we could have a sync error
     //// with the other clients because maybe the scene on the client is no yet loaded.
     //// To fix this problem we wait until all clients call this method then we create the ships
     //// for every client connected 
-    //public void ServerSceneInit(ulong clientId)
-    //{
-    //    // Save the clients 
-    //    m_connectedClients.Add(clientId);
+    public void ServerSceneInit(ulong clientId)
+    {
+        // Save the clients 
+        m_connectedClients.Add(clientId);
 
-    //    // Check if is the last client
-    //    if (m_connectedClients.Count < NetworkManager.Singleton.ConnectedClients.Count)
-    //        return;
+        // Check if is the last client
+        if (m_connectedClients.Count < NetworkManager.Singleton.ConnectedClients.Count)
+            return;
 
-    //    // For each client spawn and set UI
-    //    foreach (var client in m_connectedClients)
-    //    {
-    //        int index = 0;
+        // For each client spawn and set UI
+        foreach (var client in m_connectedClients)
+        {
 
-    //        foreach (CharacterDataSO data in m_charactersData)
-    //        {
-    //            if (data.isSelected && data.clientId == client)
-    //            {
-    //                GameObject playerSpaceship =
-    //                    NetworkObjectSpawner.SpawnNewNetworkObjectAsPlayerObject(
-    //                        data.spaceshipPrefab,
-    //                        m_shipStartingPositions[m_numberOfPlayerConnected].position,
-    //                        data.clientId,
-    //                        true);
+            foreach (CharacterDataSO data in m_charactersData)
+            {
+                if ( data.clientId == client)
+                {
+                    //GameObject playerSpaceship =
+                    //    NetworkObjectSpawner.SpawnNewNetworkObjectAsPlayerObject(
+                    //        data.spaceshipPrefab,
+                    //        m_shipStartingPositions[m_numberOfPlayerConnected].position,
+                    //        data.clientId,
+                    //        true);
+                   if (data.playerId == 0)
+                   {
+                        GameObject playerLeft =
+                            NetworkObjectSpawner.SpawnNewNetworkObjectAsPlayerObject(
+                                charsDB.GetCharacter(data.charId).charLeft,
+                                m_startingPositions[0].position,
+                                data.clientId,
+                                true);
+                   }
+                   else if (data.playerId == 1)
+                    {
+                        GameObject playerRight =
+                           NetworkObjectSpawner.SpawnNewNetworkObjectAsPlayerObject(
+                               charsDB.GetCharacter(data.charId).charRight,
+                               m_startingPositions[5].position,
+                               data.clientId,
+                               true);
+                    }
+                }
 
-    //                PlayerShipController playerShipController =
-    //                    playerSpaceship.GetComponent<PlayerShipController>();
-    //                playerShipController.characterData = data;
-    //                playerShipController.gameplayManager = this;
+               
+            }
+        }
+    }
 
-    //                m_playerShips.Add(playerShipController);
-    //                SetPlayerUIClientRpc(index, playerSpaceship.name);
 
-    //                m_numberOfPlayerConnected++;
-    //            }
 
-    //            index++;
-    //        }
-    //    }
-    //}
+
 }

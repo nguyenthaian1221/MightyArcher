@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 54463004603139230}
   - component: {fileID: 82557528819940592}
   - component: {fileID: 3159373133874512998}
-  - component: {fileID: 4909590829820527288}
   m_Layer: 0
   m_Name: Player2
   m_TagString: player2
@@ -195,26 +194,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7224af3f83d8a014eb8fd22e90a6188b, type: 3}
   - {fileID: 8300000, guid: 5119cfaffc969504d9780e3733d1d7f5, type: 3}
   isPlayerLeft: 0
---- !u!114 &4909590829820527288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1092056429115338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &1385301861747874
 GameObject:
   m_ObjectHideFlags: 0

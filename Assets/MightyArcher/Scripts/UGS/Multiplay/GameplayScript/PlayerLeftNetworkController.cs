@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 
-/// <summary>
-///Like PlayerController but it solve Right Player Problem
-/// </summary>
-public class PlayerRightController : MonoBehaviour
+
+public class PlayerLeftNetworkController : NetworkBehaviour
 {
+    /// <summary>
+    /// Main player controller class.
+    /// This class is responsible for player inputs, rotation, health-management, shooting arrows and helper-dots creation.
+    /// </summary>
 
     [Header("Public GamePlay settings")]
     public bool useHelper = true;                   //use helper dots when player is aiming to shoot
@@ -15,7 +18,7 @@ public class PlayerRightController : MonoBehaviour
     public int playerHealth = 100;                  //starting (full) health. can be edited.
     private int minShootPower = 15;                 //powers lesser than this amount are ignored. (used to cancel shoots)
     internal int playerCurrentHealth;               //real-time health. not editable.
-    public static bool isPlayerRightDead;                //flag for gameover event
+    public static bool isPlayerDead;                //flag for gameover event
 
     [Header("Linked GameObjects")]
     //Reference to game objects (childs and prefabs)
@@ -34,6 +37,7 @@ public class PlayerRightController : MonoBehaviour
     public AudioClip[] shootSfx;
     public AudioClip[] hitSfx;
 
+
     //private settings
     private Vector2 icp;                            //initial Click Position
     private Ray inputRay;
@@ -46,7 +50,6 @@ public class PlayerRightController : MonoBehaviour
     private float shootDirection;
     private Vector3 shootDirectionVector;
 
-
     //helper trajectory variables
     private float helperCreationDelay = 0.12f;
     private bool canCreateHelper;
@@ -54,7 +57,6 @@ public class PlayerRightController : MonoBehaviour
     private float helperShowTimer;
     private bool helperDelayIsDone;
 
-    public bool isPlayerLeft;
 
     /// <summary>
     /// Init
@@ -65,7 +67,7 @@ public class PlayerRightController : MonoBehaviour
         infoPanel.SetActive(false);
         shootDirectionVector = new Vector3(0, 0, 0);
         playerCurrentHealth = playerHealth;
-        isPlayerRightDead = false;
+        isPlayerDead = false;
 
         gc = GameObject.FindGameObjectWithTag("GameController");
         cam = GameObject.FindGameObjectWithTag("MainCamera");
@@ -74,7 +76,6 @@ public class PlayerRightController : MonoBehaviour
         helperShowTimer = 0;
         helperDelayIsDone = false;
 
-        isPlayerLeft = gameObject.tag.Equals("Player");   // Check whether this object is Left or right
     }
 
 
@@ -85,7 +86,7 @@ public class PlayerRightController : MonoBehaviour
     {
 
         //if the game has not started yet, or the game is finished, just return
-        if (!GameController.gameIsStarted || GameController.gameIsFinished)
+        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished)
             return;
 
         //Check if this object is dead or alive
@@ -93,30 +94,30 @@ public class PlayerRightController : MonoBehaviour
         {
             print("Player is dead...");
             playerCurrentHealth = 0;
-            isPlayerRightDead = true;
+            isPlayerDead = true;
             return;
         }
 
         //if this is not our turn, just return
-        if (!GameController.playersRightTurn)
+        if (!GameNetworkController.playersLeftTurn)
             return;
 
         //if we already have an arrow in scene, we can not shoot another one!
-        if (GameController.isArrowInScene)
+        if (GameNetworkController.isArrowInScene)
             return;
 
         if (!PauseManager.enableInput)
             return;
 
         //Player pivot turn manager
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && IsOwner)
         {
 
             turnPlayerBody();
 
             //only show shot info when we are fighting with an enemy
-            if (GameModeController.isEnemyRequired())
-                infoPanel.SetActive(true);
+            //if (GameModeController.isEnemyRequired())
+            infoPanel.SetActive(true);
 
             helperShowTimer += Time.deltaTime;
             if (helperShowTimer >= helperShowDelay)
@@ -124,7 +125,7 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //register the initial Click Position
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && IsOwner)
         {
             icp = new Vector2(inputPosX, inputPosY);
             print("icp: " + icp);
@@ -132,7 +133,7 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //clear the initial Click Position
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && IsOwner)
         {
 
             //only shoot if there is enough power applied to the shoot
@@ -159,27 +160,43 @@ public class PlayerRightController : MonoBehaviour
     /// This function will be called when this object is hit by an arrow. It will check if this is still alive after the hit.
     /// if ture, changes the turn. if not, this is dead and game should finish.
     /// </summary>
-    public void changeTurns()
-    {
+    //public void changeTurns()
+    //{
 
-        print("playerCurrentHealth: " + playerCurrentHealth);
+    //    print("playerCurrentHealth: " + playerCurrentHealth);
 
-        if (playerCurrentHealth > 0)
-            StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithCom());
-        else
-            GameController.noMoreShooting = true;
+    //    if (playerCurrentHealth > 0)
+    //        StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithCom());
+    //    else
+    //        GameController.noMoreShooting = true;
 
-    }
+    //}
+
+
 
     public void changeTurnsPlayer()
     {
         print("playerCurrentHealth: " + playerCurrentHealth);
 
         if (playerCurrentHealth > 0)
-            StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithPlayer());
+            //StartCoroutine(gc.GetComponent<GameNetworkController>().roundTurnManagerWithPlayer());
+            gc.GetComponent<GameNetworkController>().RoundTurn();
         else
-            GameController.noMoreShooting = true;
+            GameNetworkController.noMoreShooting = true;
     }
+
+    public void ChangeTurnLeftToRight()
+    {
+        ChangeTurnClientRpc();
+    }
+
+
+    [ClientRpc]
+    private void ChangeTurnClientRpc()
+    {
+        changeTurnsPlayer();
+    }
+
 
 
     /// <summary>
@@ -195,22 +212,22 @@ public class PlayerRightController : MonoBehaviour
             inputPosX = this.hitInfo.point.x;
             inputPosY = this.hitInfo.point.y;
 
+
             // set the bow's angle to the arrow
             inputDirection = new Vector2(icp.x - inputPosX, icp.y - inputPosY);
+            //print("Dir X-Y: " + inputDirection.x + " / " + inputDirection.y);
 
             shootDirection = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg;
 
-            // Debug.LogError("shootDirection:" + shootDirection);
             //for an optimal experience, we need to limit the rotation to 0 ~ 90 euler angles.
             //so...
-            if (shootDirection > 180 || (shootDirection > -180 && shootDirection < 0))
-                shootDirection = 180;
-
-            if (shootDirection < 90)
+            if (shootDirection > 90)
                 shootDirection = 90;
+            if (shootDirection < 0)
+                shootDirection = 0;
 
             //apply the rotation
-            playerTurnPivot.transform.eulerAngles = new Vector3(0, 0, shootDirection - 180);  // Cus the direction is opposite
+            playerTurnPivot.transform.eulerAngles = new Vector3(0, 0, shootDirection);
 
             //calculate shoot power
             distanceFromFirstClick = inputDirection.magnitude / 4;
@@ -219,10 +236,10 @@ public class PlayerRightController : MonoBehaviour
             //print("shootPower: " + shootPower);
 
             //modify camera cps - next update
-            CameraController.cps = 5 + (shootPower / 100);
+            CameraNetworkController.cps = 5 + (shootPower / 100);
 
             //show informations on the UI text elements
-            UiDynamicDegree.GetComponent<TextMesh>().text = (180 - (int)shootDirection).ToString();     // Multiply with -1 to hide the math problem, easy for player to use
+            UiDynamicDegree.GetComponent<TextMesh>().text = ((int)shootDirection).ToString();
             UiDynamicPower.GetComponent<TextMesh>().text = ((int)shootPower).ToString() + "%";
 
             if (useHelper)
@@ -234,10 +251,6 @@ public class PlayerRightController : MonoBehaviour
         }
     }
 
-
-
-
-
     /// <summary>
     /// Shoot sequence.
     /// For the player controller, we just need to instantiate the arrow object, apply the shoot power to it, and watch is fly.
@@ -247,32 +260,51 @@ public class PlayerRightController : MonoBehaviour
     {
 
         //set the unique flag for arrow in scene.
-        GameController.isArrowInScene = true;
+        GameNetworkController.isArrowInScene = true;
 
         //play shoot sound
         playSfx(shootSfx[Random.Range(0, shootSfx.Length)]);
 
         //add to shoot counter
-        GameController.playerArrowShot++;
+        GameNetworkController.playerArrowShot++;
 
-        GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
+        //GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
+        //arr.name = "PlayerProjectile";
+        //arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;
+        GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
         arr.name = "PlayerProjectile";
-        arr.GetComponent<MainLauncherController>().ownerID = 3;
-
+        arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;
         shootDirectionVector = Vector3.Normalize(inputDirection);
-        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
+        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, 0, 1), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
 
-        arr.GetComponent<MainLauncherController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
+        arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
 
         print("shootPower: " + shootPower + " --- " + "shootDirectionVector: " + shootDirectionVector);
 
-        cam.GetComponent<CameraController>().targetToFollow = arr;
+        //cam.GetComponent<CameraNetworkController>().targetToFollow = arr;
+        FollowProjectiles(arr);
 
         //reset body rotation
         StartCoroutine(resetBodyRotation());
     }
 
 
+
+    void FollowProjectiles(GameObject target)
+    {
+        FollowProjectilesServerRpc(target);
+    }
+    [ServerRpc]
+    void FollowProjectilesServerRpc(NetworkObjectReference target)
+    {
+        FollowProjectilesClientRpc(target);
+    }
+
+    [ClientRpc]
+    private void FollowProjectilesClientRpc(NetworkObjectReference target)
+    {
+        cam.GetComponent<CameraNetworkController>().targetToFollow = target;
+    }
     /// <summary>
     /// tunr player body to default rotation
     /// </summary>
@@ -284,13 +316,11 @@ public class PlayerRightController : MonoBehaviour
 
         yield return new WaitForSeconds(0.25f);
         float currentRotationAngle = playerTurnPivot.transform.eulerAngles.z;
-
         float t = 0;
         while (t < 1)
         {
             t += Time.deltaTime * 3;
-
-            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle-360, 0, t));
+            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle, 0, t));
             yield return 0;
         }
 
@@ -312,7 +342,7 @@ public class PlayerRightController : MonoBehaviour
 
         shootDirectionVector = Vector3.Normalize(inputDirection);
 
-        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
+        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, 0, 1), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
         //print("shootPower: " + shootPower + " --- " + "shootDirectionVector: " + shootDirectionVector);
 
         t.GetComponent<Rigidbody>().AddForce(shootDirectionVector * ((shootPower + baseShootPower) / 50), ForceMode.Impulse);
@@ -346,7 +376,6 @@ public class PlayerRightController : MonoBehaviour
     }
 
 
-
-
+    //Function Send help send data 
 
 }

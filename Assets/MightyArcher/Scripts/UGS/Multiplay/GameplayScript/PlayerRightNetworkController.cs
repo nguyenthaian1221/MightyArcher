@@ -1,14 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-
-/// <summary>
-///Like PlayerController but it solve Right Player Problem
-/// </summary>
-public class PlayerRightController : MonoBehaviour
+public class PlayerRightNetworkController : NetworkBehaviour
 {
-
     [Header("Public GamePlay settings")]
     public bool useHelper = true;                   //use helper dots when player is aiming to shoot
     public int baseShootPower = 30;                 //base power. edit with care.
@@ -85,7 +81,7 @@ public class PlayerRightController : MonoBehaviour
     {
 
         //if the game has not started yet, or the game is finished, just return
-        if (!GameController.gameIsStarted || GameController.gameIsFinished)
+        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished)
             return;
 
         //Check if this object is dead or alive
@@ -98,25 +94,25 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //if this is not our turn, just return
-        if (!GameController.playersRightTurn)
+        if (!GameNetworkController.playersRightTurn)
             return;
 
         //if we already have an arrow in scene, we can not shoot another one!
-        if (GameController.isArrowInScene)
+        if (GameNetworkController.isArrowInScene)
             return;
 
         if (!PauseManager.enableInput)
             return;
 
         //Player pivot turn manager
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && IsOwner)
         {
 
             turnPlayerBody();
 
             //only show shot info when we are fighting with an enemy
-            if (GameModeController.isEnemyRequired())
-                infoPanel.SetActive(true);
+            //if (GameModeController.isEnemyRequired())
+            infoPanel.SetActive(true);
 
             helperShowTimer += Time.deltaTime;
             if (helperShowTimer >= helperShowDelay)
@@ -124,15 +120,15 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //register the initial Click Position
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && IsOwner)
         {
             icp = new Vector2(inputPosX, inputPosY);
-            print("icp: " + icp);
-            print("icp magnitude: " + icp.magnitude);
+            //print("icp: " + icp);
+            //print("icp magnitude: " + icp.magnitude);
         }
 
         //clear the initial Click Position
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && IsOwner)
         {
 
             //only shoot if there is enough power applied to the shoot
@@ -159,27 +155,42 @@ public class PlayerRightController : MonoBehaviour
     /// This function will be called when this object is hit by an arrow. It will check if this is still alive after the hit.
     /// if ture, changes the turn. if not, this is dead and game should finish.
     /// </summary>
-    public void changeTurns()
-    {
+    //public void changeTurns()
+    //{
 
-        print("playerCurrentHealth: " + playerCurrentHealth);
+    //    print("playerCurrentHealth: " + playerCurrentHealth);
 
-        if (playerCurrentHealth > 0)
-            StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithCom());
-        else
-            GameController.noMoreShooting = true;
+    //    if (playerCurrentHealth > 0)
+    //        StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithCom());
+    //    else
+    //        GameController.noMoreShooting = true;
 
-    }
+    //}
 
     public void changeTurnsPlayer()
     {
         print("playerCurrentHealth: " + playerCurrentHealth);
 
         if (playerCurrentHealth > 0)
-            StartCoroutine(gc.GetComponent<GameController>().roundTurnManagerWithPlayer());
+            //StartCoroutine(gc.GetComponent<GameNetworkController>().roundTurnManagerWithPlayer());
+            gc.GetComponent<GameNetworkController>().RoundTurn();
         else
-            GameController.noMoreShooting = true;
+            GameNetworkController.noMoreShooting = true;
     }
+
+
+    public void ChangeTurnRightToLeft()
+    {
+        ChangeTurnClientRpc();
+    }
+
+
+    [ClientRpc]
+    private void ChangeTurnClientRpc()
+    {
+        changeTurnsPlayer();
+    }
+
 
 
     /// <summary>
@@ -219,7 +230,7 @@ public class PlayerRightController : MonoBehaviour
             //print("shootPower: " + shootPower);
 
             //modify camera cps - next update
-            CameraController.cps = 5 + (shootPower / 100);
+            CameraNetworkController.cps = 5 + (shootPower / 100);
 
             //show informations on the UI text elements
             UiDynamicDegree.GetComponent<TextMesh>().text = (180 - (int)shootDirection).ToString();     // Multiply with -1 to hide the math problem, easy for player to use
@@ -247,31 +258,48 @@ public class PlayerRightController : MonoBehaviour
     {
 
         //set the unique flag for arrow in scene.
-        GameController.isArrowInScene = true;
+        GameNetworkController.isArrowInScene = true;
 
         //play shoot sound
         playSfx(shootSfx[Random.Range(0, shootSfx.Length)]);
 
         //add to shoot counter
-        GameController.playerArrowShot++;
+        GameNetworkController.playerArrowShot++;
 
-        GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
+        //GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
+        //arr.name = "PlayerProjectile";
+        GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
         arr.name = "PlayerProjectile";
-        arr.GetComponent<MainLauncherController>().ownerID = 3;
+        arr.GetComponent<MainLauncherNetworkController>().ownerID = 3;
 
         shootDirectionVector = Vector3.Normalize(inputDirection);
         shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
 
-        arr.GetComponent<MainLauncherController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
+        arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
 
         print("shootPower: " + shootPower + " --- " + "shootDirectionVector: " + shootDirectionVector);
 
-        cam.GetComponent<CameraController>().targetToFollow = arr;
-
+        //cam.GetComponent<CameraNetworkController>().targetToFollow = arr;
+        FollowProjectiles(arr);
         //reset body rotation
         StartCoroutine(resetBodyRotation());
     }
 
+    void FollowProjectiles(GameObject target)
+    {
+        FollowProjectilesServerRpc(target);
+    }
+    [ServerRpc]
+    void FollowProjectilesServerRpc(NetworkObjectReference target)
+    {
+        FollowProjectilesClientRpc(target);
+    }
+
+    [ClientRpc]
+    private void FollowProjectilesClientRpc(NetworkObjectReference target)
+    {
+        cam.GetComponent<CameraNetworkController>().targetToFollow = target;
+    }
 
     /// <summary>
     /// tunr player body to default rotation
@@ -290,7 +318,7 @@ public class PlayerRightController : MonoBehaviour
         {
             t += Time.deltaTime * 3;
 
-            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle-360, 0, t));
+            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle - 360, 0, t));
             yield return 0;
         }
 
@@ -345,8 +373,5 @@ public class PlayerRightController : MonoBehaviour
         playSfx(hitSfx[rndIndex]);
     }
 
-
-
-
-
+    //Function Send help send data 
 }

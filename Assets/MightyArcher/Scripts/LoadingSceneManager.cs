@@ -91,8 +91,10 @@ public class LoadingSceneManager : SingletonPersistent<LoadingSceneManager>
                 break;
 
             // When a client/host connects tell the manager to create the ship and change the music
-            case "Gameplay":
-                //GameplayManager.Instance.ServerSceneInit(clientId);
+            case "GameMultiplay":
+                GameplayManager.Instance.ServerSceneInit(clientId);
+                CameraNetworkController.Instance.RunDemoNetworkClientRpc();
+                GameNetworkController.Instance.RemoteInitClientRpc();
                 break;
 
             // When a client/host connects tell the manager to create the player score ships and

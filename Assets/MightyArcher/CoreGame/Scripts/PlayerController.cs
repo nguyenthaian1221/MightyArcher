@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour {
 			//print("shootPower: " + shootPower);
 
 			//modify camera cps - next update
-			//CameraController.cps = 5 + (shootPower / 100);
+			CameraController.cps = 5 + (shootPower / 100);
 
 			//show informations on the UI text elements
 			UiDynamicDegree.GetComponent<TextMesh>().text = ((int)shootDirection).ToString();

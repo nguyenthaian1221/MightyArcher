@@ -9,4 +9,10 @@ public class Character
     public Sprite characterSprite;
     public int charID;
     public bool isOwned;
+    //public Sprite iconLeft
+    //public Sprite iconRight
+    public GameObject charLeft;
+    public GameObject charRight;
+
+
 }
