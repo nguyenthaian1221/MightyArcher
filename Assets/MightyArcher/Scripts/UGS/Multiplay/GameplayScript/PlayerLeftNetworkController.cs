@@ -86,7 +86,7 @@ public class PlayerLeftNetworkController : NetworkBehaviour
     {
 
         //if the game has not started yet, or the game is finished, just return
-        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished)
+        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished || !IsOwner)
             return;
 
         //Check if this object is dead or alive
@@ -103,7 +103,7 @@ public class PlayerLeftNetworkController : NetworkBehaviour
             return;
 
         //if we already have an arrow in scene, we can not shoot another one!
-        if (GameNetworkController.isArrowInScene)
+        if (GameNetworkController.isArrowInSceneLeft)
             return;
 
         if (!PauseManager.enableInput)
@@ -260,7 +260,7 @@ public class PlayerLeftNetworkController : NetworkBehaviour
     {
 
         //set the unique flag for arrow in scene.
-        GameNetworkController.isArrowInScene = true;
+        GameNetworkController.isArrowInSceneLeft = true;
 
         //play shoot sound
         playSfx(shootSfx[Random.Range(0, shootSfx.Length)]);
@@ -272,7 +272,7 @@ public class PlayerLeftNetworkController : NetworkBehaviour
         //arr.name = "PlayerProjectile";
         //arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;
         GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
-        arr.name = "PlayerProjectile";
+        //arr.name = "PlayerProjectile";
         arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;
         shootDirectionVector = Vector3.Normalize(inputDirection);
         shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, 0, 1), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
@@ -282,7 +282,11 @@ public class PlayerLeftNetworkController : NetworkBehaviour
         print("shootPower: " + shootPower + " --- " + "shootDirectionVector: " + shootDirectionVector);
 
         //cam.GetComponent<CameraNetworkController>().targetToFollow = arr;
-        FollowProjectiles(arr);
+        if (IsServer)
+        {
+            //FollowProjectilesClientRpc(arr);
+            FollowProjectilesClientRpc(arr);
+        }
 
         //reset body rotation
         StartCoroutine(resetBodyRotation());
@@ -290,7 +294,7 @@ public class PlayerLeftNetworkController : NetworkBehaviour
 
 
 
-    void FollowProjectiles(GameObject target)
+    void FollowProjectiles(NetworkObjectReference target)
     {
         FollowProjectilesServerRpc(target);
     }

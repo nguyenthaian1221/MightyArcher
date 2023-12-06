@@ -96,7 +96,7 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
     void Start()
     {
-
+       
         //set shoot time
         timeOfShot = Time.time;
 
@@ -104,18 +104,19 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
         //if the owner of this weapon is player, just add force to shoot it, 
         //as all calculations has already been done by payerController
-        if (ownerID == 0 || ownerID == 2 || ownerID == 3)
-        {
+        //if (ownerID == 0 || ownerID == 2 || ownerID == 3)
+        //{
 
-            //add force and let the weapon fly
-            if (playerShootVector.magnitude > 0)
-                GetComponent<Rigidbody>().AddForce(playerShootVector, ForceMode.Impulse);
+        //add force and let the weapon fly
+        if (playerShootVector.magnitude > 0)
 
-        }
-        else if (ownerID == 1)
-        {
-            enemyShoot();
-        }
+            GetComponent<Rigidbody>().AddForce(playerShootVector, ForceMode.Impulse);
+
+        //}
+        //else if (ownerID == 1)
+        //{
+        //    enemyShoot();
+        //}
 
         /*GetComponent<BoxCollider> ().enabled = false;
 		yield return new WaitForSeconds (collisionCheckDelay);
@@ -127,6 +128,7 @@ public class MainLauncherNetworkController : NetworkBehaviour
         {
             Destroy(gameObject, 45);  // Error 
         }
+
 
 
 
@@ -158,7 +160,7 @@ public class MainLauncherNetworkController : NetworkBehaviour
         {
             if (Time.time > timeOfShot + 2 || transform.position.x > 12.5f || transform.position.y > 8.5f)
             {
-                GameNetworkController.isArrowInScene = false;
+                GameNetworkController.isArrowInSceneLeft = false;
                 if (IsServer)
                 {
                     Destroy(gameObject);
@@ -173,6 +175,8 @@ public class MainLauncherNetworkController : NetworkBehaviour
             {
                 Destroy(gameObject);
             }
+
+
     }
 
 
@@ -331,14 +335,15 @@ public class MainLauncherNetworkController : NetworkBehaviour
             {
                 GameObject exp = Instantiate(explosionFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
                 exp.name = "Explosion";
-              
-                if(IsServer)
+
+                if (IsServer)
                 {
                     Destroy(gameObject, 0.01f);
                 }
             }
 
-            GameNetworkController.isArrowInScene = false;
+            GameNetworkController.isArrowInSceneLeft = false;
+            GameNetworkController.isArrowInSceneRight = false;
 
             //We only change turns if this game more requires an enemy
             //if (!bypassCode && SceneManager.GetActiveScene().name.Equals("Game"))
@@ -347,7 +352,7 @@ public class MainLauncherNetworkController : NetworkBehaviour
             //    if (ownerID == 0)
             //        enemy.GetComponent<EnemyController>().changeTurns();
             //    else if (ownerID == 1)
-            //        playerLeft.GetComponent<PlayerController>().changeTurns();
+            //        playerLeft.GetComponent<PlayerControllerTruchangeTurns();
             //}
 
             //if (!bypassCode && SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
@@ -425,18 +430,22 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //disable the arrow
             stopUpdate = true;
-            GetComponent<Rigidbody>().useGravity = false;
-            GetComponent<Rigidbody>().isKinematic = true;
+            if (IsServer)
+            {
+                Destroy(gameObject);
+            }
+            //GetComponent<Rigidbody>().useGravity = false;
+            //GetComponent<Rigidbody>().isKinematic = true;
 
-            if (GetComponent<BoxCollider>())
-                GetComponent<BoxCollider>().enabled = false;
+            //if (GetComponent<BoxCollider>())
+            //    GetComponent<BoxCollider>().enabled = false;
 
-            if (GetComponent<SphereCollider>())
-                GetComponent<SphereCollider>().enabled = false;
+            //if (GetComponent<SphereCollider>())
+            //    GetComponent<SphereCollider>().enabled = false;
 
-            trailFx.SetActive(false);
-            GameNetworkController.isArrowInScene = false;
-            transform.parent = other.collider.gameObject.transform;
+            //trailFx.SetActive(false);
+            //GameNetworkController.isArrowInScene = false;
+            //transform.parent = other.collider.gameObject.transform;
 
             //create blood fx
             GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
@@ -470,18 +479,22 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //disable the arrow
             stopUpdate = true;
-            GetComponent<Rigidbody>().useGravity = false;
-            GetComponent<Rigidbody>().isKinematic = true;
+            if (IsServer)
+            {
+                Destroy(gameObject);
+            }
+            //GetComponent<Rigidbody>().useGravity = false;
+            //GetComponent<Rigidbody>().isKinematic = true;
 
-            if (GetComponent<BoxCollider>())
-                GetComponent<BoxCollider>().enabled = false;
+            //if (GetComponent<BoxCollider>())
+            //    GetComponent<BoxCollider>().enabled = false;
 
-            if (GetComponent<SphereCollider>())
-                GetComponent<SphereCollider>().enabled = false;
+            //if (GetComponent<SphereCollider>())
+            //    GetComponent<SphereCollider>().enabled = false;
 
-            trailFx.SetActive(false);
-            GameNetworkController.isArrowInScene = false;
-            transform.parent = other.collider.gameObject.transform;
+            //trailFx.SetActive(false);
+            //GameNetworkController.isArrowInScene = false;
+            //transform.parent = other.collider.gameObject.transform;
 
             //create blood fx
             GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;

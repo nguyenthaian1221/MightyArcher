@@ -21,8 +21,9 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
 
 
     // Static variables //
-    public static int gameMode;                     //current game mode
-    public static bool isArrowInScene;              //have any body shot an arrow? (is there an arrow inside the game?)
+  
+    public static bool isArrowInSceneLeft;              //have any body shot an arrow? (is there an arrow inside the game?)
+    public static bool isArrowInSceneRight;              //have any body shot an arrow? (is there an arrow inside the game?)
 
     public static bool gameIsStarted;               //global flag for game start state
     public static bool gameIsFinished;              //global flag for game finish state
@@ -34,13 +35,13 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     public static bool playersLeftTurn;                 //flag to check if this is player's turn
     public static bool playersRightTurn;
 
-    public static bool enemysTurn;                  //flag to check if this is opponent's turn
+   
 
 
 
     public static string whosTurn;                  //current turn holder in string. useful if you want to extend the game.
 
-    public static int playerCoins;                  //available player coins
+  
     public static int playerArrowShot;              //how many arrows player shot in this game
                                                     // Static variables //
 
@@ -56,15 +57,15 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     [Header("Public GameObjects")]
     //Reference to scene game objects		
     public GameObject uiPlayerLeftHealthBar;            //Names are self-explanatory
-
-    #region Only Available in Mode with Player
     public GameObject uiLeftPlayerInfoPanel;
     public GameObject uiLeftPlayerDistance;
+
+
 
     public GameObject uiRightPlayerHealthBar;
     public GameObject uiRightPlayerInfoPanel;
     public GameObject uiRightPlayerDistance;
-    #endregion
+
 
 
 
@@ -84,32 +85,12 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     public GameObject uiGameStateLabel;
     public GameObject uiYouWon;
 
-    //[Header("BirdHunt Game Mode settings")]
-    //public GameObject uiBirdhuntStatPanel;
-    //public GameObject uiTimeText;
-    //public GameObject uiBirdsHitText;
-    //public GameObject uiStatBirdHits;
-    //public GameObject uiStatBestScore;
-    //public static int birdsHit;
-    /////Game timer vars
-    //public int availableTime = 60;                  //total gameplay time
-    //public static int bonusTime = 3;                        //additional time when we hit a bird
-    //public static float gameTimer;
-    //private string remainingTime;
-    //private int seconds;
-    //private int minutes;
 
     private Vector3 playerLeftHBSC;                     //player health bar starting scale                                                    
     private float playerLeftHealthScale;                //player health bar real-time scale
 
     private Vector3 playerRightHBSC;                     //player health bar starting scale                                                    
     private float playerRightHealthScale;                //player health bar real-time scale
-
-    //private Vector3 enemyHBSC;                      // //enemy health bar starting scale
-    //private float enemyHealthScale;                 //enemy health bar real-time scale
-
-
-
 
 
 
@@ -149,32 +130,6 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
 
     private void InitAwake()
     {
-        //get game mode
-        //gameMode = PlayerPrefs.GetInt("GAMEMODE");
-
-        //// JUST TO PREVENT BUGS WHEN LOADING GAME MODES DIRECTLY FROM EDITOR
-        //// -- REMEMBER: You need to always start the game from the menu or init scenes --
-        //if (SceneManager.GetActiveScene().name == "Game" && (gameMode == 2 || gameMode == 3))
-        //{
-        //    //This is bad
-        //    print("You need to run this game from menu scene.");
-        //    SceneManager.LoadScene("Menu");
-        //}
-
-        //if (SceneManager.GetActiveScene().name == "GameWithPlayer" && (gameMode == 1 || gameMode == 2))
-        //{
-        //    //This is bad
-        //    print("You need to run this game from menu scene.");
-        //    SceneManager.LoadScene("Menu");
-        //}
-
-        //if (SceneManager.GetActiveScene().name == "BirdHunt" && (gameMode == 1 || gameMode == 3))
-        //{
-        //    //This is bad
-        //    print("You need to run this game from menu scene.");
-        //    SceneManager.LoadScene("Menu");
-
-        //}
 
         //set ground type with high priority
         switch (groundType)
@@ -215,7 +170,8 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         //if (uiBirdhuntStatPanel)
         //    uiBirdhuntStatPanel.SetActive(false);
 
-        isArrowInScene = false;
+        isArrowInSceneLeft = false;
+        isArrowInSceneRight = false;
 
 
 
@@ -225,7 +181,7 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         noMoreShooting = false;
         round = 0;
         playerArrowShot = 0;
-        playerCoins = 0;
+      
 
         //gameTimer = availableTime;
         //seconds = 0;
@@ -286,50 +242,9 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         }
 
 
-        //manage enemy distance info on the UI
-
-
-        //Manage game timer only in birdhunt mode
-        //if (gameMode == 2)
-        //    manageGameTimer();
-
         //we no longer need to loop into gameController if the game is already finished.
         if (gameIsFinished)
             return;
-
-
-        // Mode with Computer
-
-        //if (SceneManager.GetActiveScene().name.Equals("Game"))
-        //{
-        //    //fast game finish checking...
-        //    if (EnemyController.isEnemyDead)
-        //    {
-        //        //player is winner
-        //        StartCoroutine(finishTheGame(1));
-        //    }
-
-        //    else if (playerLeft.GetComponent<PlayerController>().playerCurrentHealth <= 0)
-        //    {
-        //        //we have lost
-        //        StartCoroutine(finishTheGame(0));
-        //    }
-        //}
-
-        // if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
-        //{
-        //if (playerLeft.GetComponent<PlayerLeftNetworkController>().playerCurrentHealth <= 0)
-        //{
-        //    //we have lost
-        //    // StartCoroutine(finishTheGame(0));
-        //    print("Player Right win the game!. From Update()");
-        //}
-
-        //else if (playerRight.GetComponent<PlayerRightNetworkController>().playerCurrentHealth <= 0)
-        //{
-        //    print("Player Left win the game!. From Update()");
-        //}
-        //}
 
     }
 
@@ -398,13 +313,6 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     void updateUiEnemyInfoPanel()
     {
 
-        //only update UI if this game mode requires an enemy
-        if (!GameModeController.isEnemyRequired())
-        {
-            return;
-        }
-
-
         //Need Show UIInfo for Right-side Player
 
 
@@ -472,13 +380,6 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     /// </summary>
     void updateUiHealthBars()
     {
-
-        //only update UI if this game mode requires an enemy
-        if (!GameModeController.isEnemyRequired())
-        {
-            return;
-        }
-
 
         playerLeftHealthScale = (playerLeft.GetComponent<PlayerLeftNetworkController>().playerCurrentHealth * playerLeftHBSC.x) / playerLeft.GetComponent<PlayerLeftNetworkController>().playerHealth;
         uiPlayerLeftHealthBar.transform.localScale = new Vector3(playerLeftHealthScale, playerLeftHBSC.y, playerLeftHBSC.z);
@@ -603,7 +504,7 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     }
 
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership =false)]
     private void RemoveTargetServerRpc()
     {
         RemoveTargetClientRpc();
@@ -662,38 +563,6 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
             //}
 
         }
-
-        //calculate score and grants player some coins
-        int shotBonus = 0;
-        int timeBonus = 0;
-
-        if (playerArrowShot <= 3)
-            shotBonus = 150;
-        else if (playerArrowShot > 3 && playerArrowShot <= 6)
-            shotBonus = 75;
-        else if (playerArrowShot > 6 && playerArrowShot <= 10)
-            shotBonus = 25;
-
-        if (Time.timeSinceLevelLoad <= 30)
-            timeBonus = 250;
-        else if (Time.timeSinceLevelLoad > 30 && Time.timeSinceLevelLoad < 60)
-            timeBonus = 100;
-        else if (Time.timeSinceLevelLoad > 60 && Time.timeSinceLevelLoad < 90)
-            timeBonus = 50;
-
-        //Final coin formula (normal game)
-        playerCoins = shotBonus + timeBonus + (res * 200);
-
-        //Override - Final coin formula (Birdhunt game mode)
-        //if (res == 2)
-        //    playerCoins = birdsHit * 100;
-
-        //set the score/coins on UI
-        uiYouWon.GetComponent<TextMesh>().text = playerCoins.ToString();
-
-        //Save new coin amount
-        int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
-        PlayerPrefs.SetInt("PlayerCoins", playerCoins + savedCoins);
 
         //bring the panel inside game view
         float t = 0;

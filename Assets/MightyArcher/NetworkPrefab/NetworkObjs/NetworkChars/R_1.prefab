@@ -547,7 +547,7 @@ GameObject:
   - component: {fileID: 4518399397036770}
   - component: {fileID: 33667385631323106}
   - component: {fileID: 23212471230389968}
-  - component: {fileID: 1196134167890646298}
+  - component: {fileID: 3774266048554339001}
   m_Layer: 0
   m_Name: EnemyTurnPivot
   m_TagString: Untagged
@@ -623,7 +623,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1196134167890646298
+--- !u!114 &3774266048554339001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -632,7 +632,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1809695784921446}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 023dfc35400cac241b033ad963b717b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 0

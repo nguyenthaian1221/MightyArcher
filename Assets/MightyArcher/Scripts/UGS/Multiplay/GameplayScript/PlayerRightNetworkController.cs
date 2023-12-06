@@ -52,6 +52,8 @@ public class PlayerRightNetworkController : NetworkBehaviour
 
     public bool isPlayerLeft;
 
+
+    private GameObject projectile;
     /// <summary>
     /// Init
     /// </summary>
@@ -81,7 +83,7 @@ public class PlayerRightNetworkController : NetworkBehaviour
     {
 
         //if the game has not started yet, or the game is finished, just return
-        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished)
+        if (!GameNetworkController.gameIsStarted || GameNetworkController.gameIsFinished || !IsOwner)
             return;
 
         //Check if this object is dead or alive
@@ -98,7 +100,7 @@ public class PlayerRightNetworkController : NetworkBehaviour
             return;
 
         //if we already have an arrow in scene, we can not shoot another one!
-        if (GameNetworkController.isArrowInScene)
+        if (GameNetworkController.isArrowInSceneRight)
             return;
 
         if (!PauseManager.enableInput)
@@ -196,6 +198,7 @@ public class PlayerRightNetworkController : NetworkBehaviour
     /// <summary>
     /// When player is aiming, we need to turn the body of the player based on the angle of icp and current input position
     /// </summary>
+
     void turnPlayerBody()
     {
 
@@ -258,7 +261,7 @@ public class PlayerRightNetworkController : NetworkBehaviour
     {
 
         //set the unique flag for arrow in scene.
-        GameNetworkController.isArrowInScene = true;
+        GameNetworkController.isArrowInSceneRight = true;
 
         //play shoot sound
         playSfx(shootSfx[Random.Range(0, shootSfx.Length)]);
@@ -268,21 +271,66 @@ public class PlayerRightNetworkController : NetworkBehaviour
 
         //GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
         //arr.name = "PlayerProjectile";
-        GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
-        arr.name = "PlayerProjectile";
-        arr.GetComponent<MainLauncherNetworkController>().ownerID = 3;
+
+
+
 
         shootDirectionVector = Vector3.Normalize(inputDirection);
         shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
 
-        arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
+        if (IsOwner)
+        {
+
+            SpawnRightBulletServerRpc();
+            //projectile.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((100 + baseShootPower) / 50);
+        }
+
+        //arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
 
         print("shootPower: " + shootPower + " --- " + "shootDirectionVector: " + shootDirectionVector);
 
         //cam.GetComponent<CameraNetworkController>().targetToFollow = arr;
-        FollowProjectiles(arr);
+        //FollowProjectiles(arr);
         //reset body rotation
         StartCoroutine(resetBodyRotation());
+    }
+
+    [ServerRpc]
+    void SpawnRightBulletServerRpc()
+    {
+
+        //GameObject newBullet = GetNewBullet();
+
+        //PrepareNewlySpawnedBulltet(newBullet);
+        GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow,
+            playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
+        //arr.name = "PlayerProjectile";
+        //arr.GetComponent<MainLauncherNetworkController>().ownerID = 3;
+        //shootDirectionVector = Vector3.Normalize(inputDirection);
+        //shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
+
+        //arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((100 + baseShootPower) / 50);
+
+
+        FollowProjectiles(projectile);
+    }
+
+
+    private GameObject GetNewBullet()
+    {
+        return NetworkObjectSpawner.SpawnNewNetworkObject(arrow,
+           playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
+    }
+    private void PrepareNewlySpawnedBulltet(GameObject newBullet)
+    {
+        MainLauncherNetworkController bulletController = newBullet.GetComponent<MainLauncherNetworkController>();
+        bulletController.name = "PlayerProjectile";
+        bulletController.GetComponent<MainLauncherNetworkController>().ownerID = 3;
+        shootDirectionVector = Vector3.Normalize(inputDirection);
+        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
+
+        newBullet.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((100 + baseShootPower) / 50);
+        FollowProjectiles(newBullet);
     }
 
     void FollowProjectiles(GameObject target)
@@ -322,7 +370,17 @@ public class PlayerRightNetworkController : NetworkBehaviour
             yield return 0;
         }
 
+
+        //TestChangeTurnServerRpc();    // Bat cung TestChangeTurnServerRpc() de test ban khong co ten
     }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //private void TestChangeTurnServerRpc()
+    //{
+    //    var playerLeft = GameObject.FindGameObjectWithTag("Player");
+    //    playerLeft.GetComponent<PlayerLeftNetworkController>().ChangeTurnLeftToRight();
+    //}
+
 
 
     /// <summary>
