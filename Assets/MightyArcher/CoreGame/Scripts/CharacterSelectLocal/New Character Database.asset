@@ -23,5 +23,5 @@ MonoBehaviour:
     characterSprite: {fileID: 21300000, guid: b7846e46775fd8f438cf86270b97d98f, type: 3}
     charID: 2
     isOwned: 1
-    charLeft: {fileID: 1210408377191846, guid: 566c0470229790f41aa32bacd9895e46, type: 3}
-    charRight: {fileID: 1092056429115338, guid: 4a66f4f9424e60149a2de4efba40e41e, type: 3}
+    charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
+    charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}

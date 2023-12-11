@@ -278,12 +278,16 @@ public class PlayerRightNetworkController : NetworkBehaviour
         shootDirectionVector = Vector3.Normalize(inputDirection);
         shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
 
-        if (IsOwner)
+        //if (IsOwner)
+        //{
+        if (!IsServer)
         {
-
             SpawnRightBulletServerRpc();
-            //projectile.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((100 + baseShootPower) / 50);
         }
+
+        //UpdateVariableServerRpc();
+        //}
+
 
         //arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
 
@@ -298,18 +302,17 @@ public class PlayerRightNetworkController : NetworkBehaviour
     [ServerRpc]
     void SpawnRightBulletServerRpc()
     {
-
         //GameObject newBullet = GetNewBullet();
 
         //PrepareNewlySpawnedBulltet(newBullet);
         GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow,
             playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
         //arr.name = "PlayerProjectile";
-        //arr.GetComponent<MainLauncherNetworkController>().ownerID = 3;
-        //shootDirectionVector = Vector3.Normalize(inputDirection);
-        //shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
+        arr.GetComponent<MainLauncherNetworkController>().ownerID = 3;
+        shootDirectionVector = Vector3.Normalize(inputDirection);
+        shootDirectionVector = new Vector3(Mathf.Clamp(shootDirectionVector.x, -1, 0), Mathf.Clamp(shootDirectionVector.y, 0, 1), shootDirectionVector.z);
 
-        //arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((100 + baseShootPower) / 50);
+        arr.GetComponent<MainLauncherNetworkController>().playerShootVector = shootDirectionVector * ((shootPower + baseShootPower) / 50);
 
 
         FollowProjectiles(projectile);
@@ -347,6 +350,32 @@ public class PlayerRightNetworkController : NetworkBehaviour
     private void FollowProjectilesClientRpc(NetworkObjectReference target)
     {
         cam.GetComponent<CameraNetworkController>().targetToFollow = target;
+    }
+
+
+    //========================Code sinh dan ======================
+    [ServerRpc]
+
+    void UpdateVariableServerRpc()
+    {
+        UpdateVariableClientRpc();
+    }
+
+
+    [ClientRpc]
+    void UpdateVariableClientRpc()
+    {
+        UpdateVariable();
+    }
+
+    void UpdateVariable()
+    {
+        ObjectSpawnerNetwork.Instance.projectile = arrow;
+        ObjectSpawnerNetwork.Instance.curPos = playerShootPosition.transform.position;
+        ObjectSpawnerNetwork.Instance.shootDirection = shootDirection;
+        ObjectSpawnerNetwork.Instance.shootDirectionVector = shootDirectionVector;
+        ObjectSpawnerNetwork.Instance.shootPower = shootPower; ;
+
     }
 
     /// <summary>

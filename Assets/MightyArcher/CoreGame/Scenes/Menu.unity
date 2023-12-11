@@ -2938,6 +2938,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3058443168827781738, guid: 43bf8b2c874f15f4585ce898a26e757d, type: 3}
+      propertyPath: ConnectionData.Address
+      value: 127.0.0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3058443168827781738, guid: 43bf8b2c874f15f4585ce898a26e757d, type: 3}
+      propertyPath: ConnectionData.ServerListenAddress
+      value: 127.0.0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3058443168827781739, guid: 43bf8b2c874f15f4585ce898a26e757d, type: 3}
       propertyPath: m_RootOrder
       value: 9

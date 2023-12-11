@@ -360,10 +360,10 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             if (ownerID == 0)
                 //playerRight.GetComponent<PlayerRightNetworkController>().changeTurnsPlayer();
-                playerRight.GetComponent<PlayerRightNetworkController>().ChangeTurnRightToLeft();
+                playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
             else if (ownerID == 3)
                 //playerLeft.GetComponent<PlayerLeftNetworkController>().changeTurnsPlayer();
-                playerLeft.GetComponent<PlayerLeftNetworkController>().ChangeTurnLeftToRight();
+                playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
             //}
 
         }
@@ -453,10 +453,10 @@ public class MainLauncherNetworkController : NetworkBehaviour
             Destroy(blood, 1.5f);
 
             //manage victim's helath status
-            playerLeft.GetComponent<PlayerLeftNetworkController>().playerCurrentHealth -= damage;
+            playerLeft.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
 
             //play hit sfx
-            playerLeft.GetComponent<PlayerLeftNetworkController>().playRandomHitSound();
+            playerLeft.GetComponent<PlayerNetworkController>().playRandomHitSound();
 
             //change the turn
             //if (SceneManager.GetActiveScene().name.Equals("Game"))
@@ -464,7 +464,7 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
             //playerLeft.GetComponent<PlayerLeftNetworkController>().changeTurnsPlayer();
-            playerLeft.GetComponent<PlayerLeftNetworkController>().ChangeTurnLeftToRight();
+            playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
 
         }
 
@@ -502,17 +502,17 @@ public class MainLauncherNetworkController : NetworkBehaviour
             Destroy(blood, 1.5f);
 
             //manage victim's helath status
-            playerRight.GetComponent<PlayerRightNetworkController>().playerCurrentHealth -= damage;
+            playerRight.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
 
             //play hit sfx
-            playerRight.GetComponent<PlayerRightNetworkController>().playRandomHitSound();
+            playerRight.GetComponent<PlayerNetworkController>().playRandomHitSound();
 
 
 
             //change the turn
             //if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
             //playerRight.GetComponent<PlayerRightNetworkController>().changeTurnsPlayer();
-            playerRight.GetComponent<PlayerRightNetworkController>().ChangeTurnRightToLeft();
+            playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
         }
 
 
