@@ -281,6 +281,8 @@ public class PlayerNetworkController : NetworkBehaviour
         }
     }
 
+
+
     void shootArrow()
     {
 
@@ -296,6 +298,7 @@ public class PlayerNetworkController : NetworkBehaviour
         //GameObject arr = Instantiate(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1)) as GameObject;
         //arr.name = "PlayerProjectile";
         //arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;
+
         GameObject arr = NetworkObjectSpawner.SpawnNewNetworkObject(arrow, playerShootPosition.transform.position, Quaternion.Euler(0, 180, shootDirection * -1));
         //arr.name = "PlayerProjectile";
         arr.GetComponent<MainLauncherNetworkController>().ownerID = 0;

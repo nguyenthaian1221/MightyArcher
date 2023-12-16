@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     // Static variables //
     public static int gameMode;                     //current game mode
     public static bool isArrowInScene;              //have any body shot an arrow? (is there an arrow inside the game?)
-    
+
     public static bool gameIsStarted;               //global flag for game start state
     public static bool gameIsFinished;              //global flag for game finish state
     public static bool noMoreShooting;              //We use this to stop the shoots when someone has been killed but the game is yet to finish
@@ -281,12 +281,14 @@ public class GameController : MonoBehaviour
             {
                 //we have lost
                 // StartCoroutine(finishTheGame(0));
-                print("Player Right win the game!. From Update()");
+                //print("Player Right win the game!. From Update()");
+                StartCoroutine(finishTheGame(4));
             }
 
             else if (playerRight.GetComponent<PlayerRightController>().playerCurrentHealth <= 0)
             {
-                print("Player Left win the game!. From Update()");
+                //print("Player Left win the game!. From Update()");
+                StartCoroutine(finishTheGame(3));
             }
         }
 
@@ -694,6 +696,14 @@ public class GameController : MonoBehaviour
             }
 
         }
+        else if (res == 3)
+        {
+            uiGameStateLabel.GetComponent<TextMesh>().text = "Player Left Win";
+        }
+        else if (res == 4)
+        {
+            uiGameStateLabel.GetComponent<TextMesh>().text = "Player Right Win";
+        }
 
         //calculate score and grants player some coins
         int shotBonus = 0;
@@ -721,11 +731,19 @@ public class GameController : MonoBehaviour
             playerCoins = birdsHit * 100;
 
         //set the score/coins on UI
-        uiYouWon.GetComponent<TextMesh>().text = playerCoins.ToString();
+        if (res == 3 || res == 4)
+        {
+            uiYouWon.GetComponent<TextMesh>().text = "0"; // Not available in this mode
+        }
+        else
+        {
+            uiYouWon.GetComponent<TextMesh>().text = playerCoins.ToString();
 
-        //Save new coin amount
-        int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
-        PlayerPrefs.SetInt("PlayerCoins", playerCoins + savedCoins);
+            //Save new coin amount
+            int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
+            PlayerPrefs.SetInt("PlayerCoins", playerCoins + savedCoins);
+        }
+
 
         //bring the panel inside game view
         float t = 0;

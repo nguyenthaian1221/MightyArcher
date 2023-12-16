@@ -208,7 +208,7 @@ public class CameraNetworkController : SingletonNetwork<CameraNetworkController>
         handleCps();
 
         //follow the target (if any)
-        //Debug.Log(targetToFollow);
+      
         if (targetToFollow)
         {
             StartCoroutine(smoothFollow(targetToFollow.transform.position));

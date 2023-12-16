@@ -342,8 +342,11 @@ public class MainLauncherNetworkController : NetworkBehaviour
                 }
             }
 
-            GameNetworkController.isArrowInSceneLeft = false;
-            GameNetworkController.isArrowInSceneRight = false;
+
+            if (IsServer)
+            {
+                HitGroundClientRpc();
+            }
 
             //We only change turns if this game more requires an enemy
             //if (!bypassCode && SceneManager.GetActiveScene().name.Equals("Game"))
@@ -358,12 +361,6 @@ public class MainLauncherNetworkController : NetworkBehaviour
             //if (!bypassCode && SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
             //{
 
-            if (ownerID == 0)
-                //playerRight.GetComponent<PlayerRightNetworkController>().changeTurnsPlayer();
-                playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
-            else if (ownerID == 3)
-                //playerLeft.GetComponent<PlayerLeftNetworkController>().changeTurnsPlayer();
-                playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
             //}
 
         }
@@ -430,9 +427,20 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //disable the arrow
             stopUpdate = true;
+            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+            blood.name = "BloodFX";
+            Destroy(blood, 1.5f);
+            //playerLeft.GetComponent<PlayerNetworkController>().playRandomHitSound();
+          
             if (IsServer)
             {
+                DameLeftPlayerClientRpc();
                 Destroy(gameObject);
+                playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
+                if (playerLeft.GetComponent<PlayerNetworkController>().playerCurrentHealth <= 0)
+                {
+                    GameNetworkController.Instance.SendRewardClientRpc(0);
+                }
             }
             //GetComponent<Rigidbody>().useGravity = false;
             //GetComponent<Rigidbody>().isKinematic = true;
@@ -448,15 +456,13 @@ public class MainLauncherNetworkController : NetworkBehaviour
             //transform.parent = other.collider.gameObject.transform;
 
             //create blood fx
-            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
-            blood.name = "BloodFX";
-            Destroy(blood, 1.5f);
+
 
             //manage victim's helath status
-            playerLeft.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
+
 
             //play hit sfx
-            playerLeft.GetComponent<PlayerNetworkController>().playRandomHitSound();
+
 
             //change the turn
             //if (SceneManager.GetActiveScene().name.Equals("Game"))
@@ -464,8 +470,8 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
             //playerLeft.GetComponent<PlayerLeftNetworkController>().changeTurnsPlayer();
-            playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
 
+           
         }
 
 
@@ -479,9 +485,20 @@ public class MainLauncherNetworkController : NetworkBehaviour
 
             //disable the arrow
             stopUpdate = true;
+            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+            blood.name = "BloodFX";
+            Destroy(blood, 1.5f);
+            //playerRight.GetComponent<PlayerNetworkController>().playRandomHitSound();
+            
             if (IsServer)
             {
+                DameRightPlayerClientRpc();
                 Destroy(gameObject);
+                playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
+                if (playerRight.GetComponent<PlayerNetworkController>().playerCurrentHealth <= 0)
+                {
+                    GameNetworkController.Instance.SendRewardClientRpc(1);
+                }
             }
             //GetComponent<Rigidbody>().useGravity = false;
             //GetComponent<Rigidbody>().isKinematic = true;
@@ -497,36 +514,50 @@ public class MainLauncherNetworkController : NetworkBehaviour
             //transform.parent = other.collider.gameObject.transform;
 
             //create blood fx
-            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
-            blood.name = "BloodFX";
-            Destroy(blood, 1.5f);
+
 
             //manage victim's helath status
-            playerRight.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
-
+           
             //play hit sfx
-            playerRight.GetComponent<PlayerNetworkController>().playRandomHitSound();
-
-
-
+           
+         
             //change the turn
             //if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
             //playerRight.GetComponent<PlayerRightNetworkController>().changeTurnsPlayer();
-            playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
+          
         }
-
-
-
-        //Special case - collision with birds
-        //if (oTag == "bird")
-        //{
-        //    other.collider.gameObject.GetComponent<BirdsController>().die();
-        //    Destroy(gameObject);
-        //}
-
 
         //enable collision detection again
         yield return new WaitForSeconds(0.5f);
         isChecking = false;
     }
+
+
+    // Calculate damage and Update UI 
+    [ClientRpc]
+    void DameLeftPlayerClientRpc()
+    {
+        GameNetworkController.isArrowInSceneRight = false;
+        playerLeft.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
+    }
+
+    [ClientRpc]
+    void DameRightPlayerClientRpc()
+    {
+        GameNetworkController.isArrowInSceneLeft = false;
+        playerRight.GetComponent<PlayerNetworkController>().playerCurrentHealth -= damage;
+    }
+    [ClientRpc]
+    void HitGroundClientRpc()
+    {
+        GameNetworkController.isArrowInSceneLeft = false;
+        GameNetworkController.isArrowInSceneRight = false;
+        if (ownerID == 0)
+            //playerRight.GetComponent<PlayerRightNetworkController>().changeTurnsPlayer();
+            playerRight.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
+        else if (ownerID == 3)
+            //playerLeft.GetComponent<PlayerLeftNetworkController>().changeTurnsPlayer();
+            playerLeft.GetComponent<PlayerNetworkController>().ChangeTurnClientRpc();
+    }
+    
 }

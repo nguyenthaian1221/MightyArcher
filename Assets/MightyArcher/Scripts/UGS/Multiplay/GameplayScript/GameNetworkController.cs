@@ -684,8 +684,8 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     /// setting ground types (to curved or flat types), managing UI elements including health bars and info panels, managing player inputs (on UI), 
     /// checking for gameover events and post gameover settings.
     /// </summary>
-   
-    
+
+
     //[Header("Background Type")]
     public enum groundTypes { flat, curved }
     public groundTypes groundType = groundTypes.flat;   //we have two options here. default is flat ground.
@@ -1040,23 +1040,16 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         if (playerLeft.GetComponent<PlayerNetworkController>().playerCurrentHealth <= 0)
         {
 
-            //player is winner
-            //StartCoroutine(finishTheGame(1));
-
-            print("Player Left is dead.Player Right wins");
-
+            SendRewardClientRpc(0);
+            //print("Player Left is dead.Player Right wins");
             yield break;
 
         }
         else if (playerRight.GetComponent<PlayerNetworkController>().playerCurrentHealth <= 0)
         {
-
-            //we have lost
-            //StartCoroutine(finishTheGame(0));
-
-            print("Player Right is dead. Player Left win");
+            SendRewardClientRpc(1);
+            //print("Player Right is dead. Player Left win");
             yield break;
-
         }
 
         //3. if none of the above is true, continue with the turn-change...
@@ -1161,26 +1154,39 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         //set the label
         if (res == 0)
         {
-            uiGameStateLabel.GetComponent<TextMesh>().text = "You have Lost :(";
+            if (IsHost)
+            {
+                uiGameStateLabel.GetComponent<TextMesh>().text = "You have Lost :(";
+                uiYouWon.GetComponent<TextMesh>().text = "500"; // Not available in this mode
+                int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
+                PlayerPrefs.SetInt("PlayerCoins", 500 + savedCoins);
+            }
+            else
+            {
+                uiGameStateLabel.GetComponent<TextMesh>().text = "You have Won !";
+                uiYouWon.GetComponent<TextMesh>().text = "2000"; // Not available in this mode
+                int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
+                PlayerPrefs.SetInt("PlayerCoins", 2000 + savedCoins);
+            }
+
         }
         else if (res == 1)
         {
-            uiGameStateLabel.GetComponent<TextMesh>().text = "You have Won !";
-        }
-        else if (res == 2)
-        {
-            //uiGameStateLabel.GetComponent<TextMesh>().text = "Did you have a good hunt?";
-            ////set stat info
-            //uiBirdhuntStatPanel.SetActive(true);
-            //uiStatBirdHits.GetComponent<TextMesh>().text = birdsHit.ToString();
-            //int BirdHuntBestScore = PlayerPrefs.GetInt("BirdHuntBestScore");
-            //uiStatBestScore.GetComponent<TextMesh>().text = BirdHuntBestScore.ToString();
-            ////save new best score
-            //if (birdsHit > BirdHuntBestScore)
-            //{
-            //    PlayerPrefs.SetInt("BirdHuntBestScore", birdsHit);
-            //    uiStatBestScore.GetComponent<TextMesh>().text = birdsHit.ToString();
-            //}
+
+            if (IsHost)
+            {
+                uiGameStateLabel.GetComponent<TextMesh>().text = "You have Won !";
+                uiYouWon.GetComponent<TextMesh>().text = "2000"; // Not available in this mode
+                int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
+                PlayerPrefs.SetInt("PlayerCoins", 2000 + savedCoins);
+            }
+            else
+            {
+                uiGameStateLabel.GetComponent<TextMesh>().text = "You have Lost :(";
+                uiYouWon.GetComponent<TextMesh>().text = "500"; // Not available in this mode
+                int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
+                PlayerPrefs.SetInt("PlayerCoins", 500 + savedCoins);
+            }
 
         }
 
@@ -1197,6 +1203,12 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
 
     }
 
+    [ClientRpc]
+    public void SendRewardClientRpc(int res)
+    {
+        Debug.LogError("Da vao day");
+        StartCoroutine(finishTheGame(res));
+    }
 
     //*****************************************************************************
     // This function animates a button by modifying it's scales on x-y plane.
