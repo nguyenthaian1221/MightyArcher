@@ -26,13 +26,18 @@ public class MenuController : MonoBehaviour
     public AudioClip tapSfx;                    //tap sound for buttons click
 
     public GameObject coinLabel;                //coin text on menu scene
+    public GameObject charCanvas;
+
+
 
     void Awake()
     {
-
         //debug
         //PlayerPrefs.DeleteAll();
-
+        if (charCanvas.activeSelf)
+        {
+            charCanvas.SetActive(false);
+        }
         Time.timeScale = 1.0f;
         Time.fixedDeltaTime = 0.002f;
 
@@ -122,7 +127,14 @@ public class MenuController : MonoBehaviour
 
                     break;
 
-
+                case "Button-char":              
+                    playSfx(tapSfx);                            //play touch sound
+                    StartCoroutine(animateButton(objectHit));   //touch animation effect
+                    //yield return new WaitForSeconds(1.0f);      //Wait for the animation to end
+                    yield return null;
+                    Time.timeScale = 0;
+                    charCanvas.SetActive(true);
+                    break;
 
             }
 
@@ -182,5 +194,11 @@ public class MenuController : MonoBehaviour
         }
     }
 
+
+
+    public void OnCloseClicked()
+    {
+        Time.timeScale = 1;
+    }
 
 }
