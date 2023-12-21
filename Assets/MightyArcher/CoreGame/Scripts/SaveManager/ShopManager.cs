@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Services.CloudSave;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +37,6 @@ public class ShopManager : MonoBehaviour
                 //character.isUnlocked = false;
                 #endregion
                 character.isUnlocked = PlayerPrefs.GetInt(character.characterName, 0) == 0 ? false : true;
-
             }
 
 
@@ -86,6 +86,12 @@ public class ShopManager : MonoBehaviour
         character.isUnlocked = true;
         PlayerPrefs.SetInt("PlayerCoins", PlayerPrefs.GetInt("PlayerCoins", 0) - character.price);
         UpdateUI();
+
+        //Save data on cloud
+
+        var data = new Dictionary<string, object> { { "PlayerCoins", PlayerPrefs.GetInt("PlayerCoins") }, { character.characterName,1} };
+        CloudSaveService.Instance.Data.Player.SaveAsync(data);
+
     }
 
 

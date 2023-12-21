@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.CloudSave;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -742,6 +743,7 @@ public class GameController : MonoBehaviour
             //Save new coin amount
             int savedCoins = PlayerPrefs.GetInt("PlayerCoins");
             PlayerPrefs.SetInt("PlayerCoins", playerCoins + savedCoins);
+            SaveCoinData();
         }
 
 
@@ -856,5 +858,13 @@ public class GameController : MonoBehaviour
     {
         gameTimer += bonusTime;
     }
+
+
+    public async void SaveCoinData()
+    {
+        var data = new Dictionary<string, object> { { "PlayerCoins", PlayerPrefs.GetInt("PlayerCoins") } };
+        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+    }
+
 
 }

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 using System;
 using UnityEngine.SceneManagement;
 
 
+using System.Threading.Tasks;
 public class MenuController : MonoBehaviour
 {
 
@@ -43,7 +45,7 @@ public class MenuController : MonoBehaviour
 
         //show avilable player coins in menu scene
         coinLabel.GetComponent<TextMesh>().text = PlayerPrefs.GetInt("PlayerCoins", 0).ToString();
-
+  
     }
 
 
@@ -200,5 +202,9 @@ public class MenuController : MonoBehaviour
     {
         Time.timeScale = 1;
     }
+
+
+
+
 
 }

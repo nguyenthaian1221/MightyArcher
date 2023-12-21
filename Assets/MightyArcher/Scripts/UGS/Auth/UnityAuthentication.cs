@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.Services.CloudSave;
+using Unity.Services.CloudSave.Models;
 
 public class UnityAuthentication : MonoBehaviour
 {
@@ -16,7 +18,7 @@ public class UnityAuthentication : MonoBehaviour
     [SerializeField] GameObject rg_usernamefield;
     [SerializeField] GameObject rg_passwordfield;
     [SerializeField] GameObject rg_repeatpasswordfield;
-
+    [SerializeField] CharacterDatabase charDB;
 
     private async void Start()
     {
@@ -39,7 +41,9 @@ public class UnityAuthentication : MonoBehaviour
             Debug.Log($"Access Token: {AuthenticationService.Instance.AccessToken}");
 
             // Load Cloud Save data if player is not anonymous
-            SceneManager.LoadScene("Menu");
+            LoadData();
+
+
 
             // Change Scene
         };
@@ -289,6 +293,63 @@ public class UnityAuthentication : MonoBehaviour
     #endregion
 
 
+    public async void SaveData()
+    {
+        var data = new Dictionary<string, object> { { "keyName", "value" } };
+        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+    }
+
+
+    public async void LoadData()
+    {
+        #region manage all key 
+        HashSet<string> listofkeys = new HashSet<string>();
+        listofkeys.Add("PlayerCoins");
+
+        //add all data name into set
+        for (int i = 0; i < charDB.characterCount; i++)
+        {
+            var character = charDB.GetCharacter(i);
+
+            listofkeys.Add(character.characterName);
+
+        }
+
+
+        #endregion
+
+        var playerData = await CloudSaveService.Instance.Data.Player.LoadAsync(listofkeys);
+
+        if (playerData.TryGetValue("PlayerCoins", out var keyName))
+        {
+            Debug.LogError($"PlayerCoins: {keyName.Value.GetAs<int>()}");
+            PlayerPrefs.SetInt("PlayerCoins", keyName.Value.GetAs<int>());
+        }
+        else
+        {
+            PlayerPrefs.SetInt("PlayerCoins", 0);
+        }
+
+        // Get PlayerPrefs
+        for (int i = 0; i < charDB.characterCount; i++)
+        {
+            var character = charDB.GetCharacter(i);
+
+
+            if (playerData.TryGetValue(character.characterName, out var namechar))
+            {
+               
+                PlayerPrefs.SetInt(character.characterName, namechar.Value.GetAs<int>());
+            }
+            else
+            {
+                PlayerPrefs.SetInt(character.characterName, 0);
+            }
+
+        }
+
+        SceneManager.LoadScene("Menu");
+    }
 
 
 }
