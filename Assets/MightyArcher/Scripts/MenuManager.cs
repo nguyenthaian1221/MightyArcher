@@ -1,16 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Relay.Models;
+using Unity.Services.Relay;
 using UnityEngine;
+using TMPro;
 
 public class MenuManager : SingletonNetwork<GameplayManager>
 {
 
     private string nextScene = "CharacterSelection";
 
+    public static string joincodestatic;
+
     [SerializeField]
     private CharacterDataSO[] m_characterDatas;
 
+    [SerializeField]
+    GameObject joincodefield;
     private IEnumerator Start()
     {
         // -- To test with latency on development builds --
@@ -48,11 +60,27 @@ public class MenuManager : SingletonNetwork<GameplayManager>
         LoadingSceneManager.Instance.LoadScene(nextScene);
     }
 
+    public void OnclickHost2()
+    {
+        StartHostWithRelay();
+    }
+
     public void OnClickJoin()
     {
         //AudioManager.Instance.PlaySoundEffect(m_confirmClip);
         StartCoroutine(Join());
     }
+
+
+    public void OnClickJoin2()
+    {
+        //get data from input
+        var password = joincodefield.GetComponent<TMP_InputField>().text;
+
+        //StartClientWithRelay(password);
+        StartCoroutine(Join2(password));
+    }
+
 
     public void OnClickQuit()
     {
@@ -83,5 +111,48 @@ public class MenuManager : SingletonNetwork<GameplayManager>
 
         NetworkManager.Singleton.StartClient();
     }
+
+    private IEnumerator Join2(string joincode)
+    {
+        LoadingFadeEffect.Instance.FadeAll();
+        yield return new WaitUntil(() => LoadingFadeEffect.s_canLoad);
+        StartClientWithRelay(joincode);
+
+    }
+
+
+
+    public async Task<string> StartHostWithRelay(int maxConnections = 2)
+    {
+        //await UnityServices.InitializeAsync();
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+        Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
+        var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+        Debug.LogError("Ao that day " + joinCode);
+        joincodestatic = joinCode;
+        LoadingSceneManager.Instance.LoadScene(nextScene);
+        return NetworkManager.Singleton.StartHost() ? joinCode : null;
+
+    }
+
+
+    public async Task<bool> StartClientWithRelay(string joinCode)
+    {
+        //await UnityServices.InitializeAsync();
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+
+        var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
+        return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
+    }
+
+
 
 }

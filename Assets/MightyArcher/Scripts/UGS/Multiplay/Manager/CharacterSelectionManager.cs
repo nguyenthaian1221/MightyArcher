@@ -72,9 +72,14 @@ public class CharacterSelectionManager : SingletonNetwork<CharacterSelectionMana
     float m_timer;
 
 
+    [SerializeField]
+    TextMeshProUGUI joincode;
+
     void Start()
     {
         m_timer = m_timeToStartGame;
+        joincode.text = MenuManager.joincodestatic;
+
 
     }
 
@@ -393,13 +398,13 @@ public class CharacterSelectionManager : SingletonNetwork<CharacterSelectionMana
         m_playerStates[playerId].playerState = ConnectionState.ready;
         m_charactersContainers[playerId].iconReady.SetActive(true);
         m_playerStates[playerId].idOfCharSelectd = characterSelected;
-        if(playerId == 0)
+        if (playerId == 0)
         {
             charactersData[0].clientId = clientId;
             charactersData[0].charId = characterSelected;
             charactersData[0].playerId = playerId;
         }
-        else if (playerId == 1) 
+        else if (playerId == 1)
         {
             charactersData[1].clientId = clientId;
             charactersData[1].charId = characterSelected;
