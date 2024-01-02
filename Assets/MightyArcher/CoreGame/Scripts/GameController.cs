@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.CloudSave;
 using UnityEngine;
@@ -110,7 +111,15 @@ public class GameController : MonoBehaviour
     private float enemyHealthScale;                 //enemy health bar real-time scale
 
 
+    //Show Alert Text
+    [SerializeField] GameObject healAlertText;
 
+
+
+
+    //Skill Cooldown
+    public int skillRoundCountPlayerLeft = -1;
+    public int skillRoundCountPlayerRight = -1;
 
 
 
@@ -298,20 +307,20 @@ public class GameController : MonoBehaviour
 
         // DEBUG COMMANDS //
         //Force restart
-        if (Input.GetKey(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-        //Fake damage to player
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            playerLeft.GetComponent<PlayerController>().playerCurrentHealth -= 10;
-        }
-        //Fake damage to enemy
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            enemy.GetComponent<EnemyController>().enemyCurrentHealth -= 10;
-        }
+        //if (Input.GetKey(KeyCode.R))
+        //{
+        //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //}
+        ////Fake damage to player
+        //if (Input.GetKeyUp(KeyCode.D))
+        //{
+        //    playerLeft.GetComponent<PlayerController>().playerCurrentHealth -= 10;
+        //}
+        ////Fake damage to enemy
+        //if (Input.GetKeyUp(KeyCode.E))
+        //{
+        //    enemy.GetComponent<EnemyController>().enemyCurrentHealth -= 10;
+        //}
     }
 
 
@@ -574,6 +583,7 @@ public class GameController : MonoBehaviour
             yield break;
         }
 
+
         //2. then check if the situation meets a game over
         //check for game finish state
         if (playerLeft.GetComponent<PlayerController>().playerCurrentHealth <= 0)
@@ -598,10 +608,41 @@ public class GameController : MonoBehaviour
 
         }
 
+
+
         //3. if none of the above is true, continue with the turn-change...
+        // Special buff will hapens here 
+
+
+        healAlertText.SetActive(false);
+
+        switch (round)
+        {
+
+            case 4:
+                HealRound();
+                CamOnMedianPoint();
+                yield return new WaitForSeconds(2);
+                healAlertText.SetActive(false);
+                break;
+
+            case 20:
+                BuffDame();
+                break;
+            case 40:
+                Meteoroid();
+                break;
+            case 60:
+                Meteoroid();
+                break;
+        }
+
+
 
         round++;    //game starts with round 1
         print("Round: " + round);
+
+
 
         //if round carry is odd, its players turn, otherwise its opponent's turn
         int carry;
@@ -865,6 +906,49 @@ public class GameController : MonoBehaviour
         var data = new Dictionary<string, object> { { "PlayerCoins", PlayerPrefs.GetInt("PlayerCoins") } };
         await CloudSaveService.Instance.Data.Player.SaveAsync(data);
     }
+
+
+    // Manager Map Events
+
+    void SpecialPerRound(int round)
+    {
+
+
+        // Some Special Round will drop item 
+        // items collide with player will apply buff on that player right away
+
+
+    }
+
+    private void Meteoroid()
+    {
+        Debug.LogError("Meteoroid");
+
+        //CamOnMedianPoint();
+    }
+
+    private void BuffDame()
+    {
+        Debug.LogError("BuffDame");
+        // CamOnMedianPoint();
+    }
+
+    private void HealRound()
+    {
+        healAlertText.SetActive(true);
+        Debug.LogError("BuffHeal");
+        //CamOnMedianPoint();
+    }
+
+    private void CamOnMedianPoint()
+    {
+        StartCoroutine(cam.GetComponent<CameraController>().goToPosition(cam.GetComponent<CameraController>().cameraCurrentPos, (playerLeft.transform.position + playerRight.transform.position) / 2, 1));
+
+    }
+
+
+
+
 
 
 }

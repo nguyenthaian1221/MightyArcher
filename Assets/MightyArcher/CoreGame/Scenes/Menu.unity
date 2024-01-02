@@ -1534,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &625599050
 Transform:
   m_ObjectHideFlags: 0
@@ -2849,7 +2849,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1542218418}
   - component: {fileID: 1542218421}
-  - component: {fileID: 1542218420}
+  - component: {fileID: 1542218422}
   - component: {fileID: 1542218419}
   m_Layer: 0
   m_Name: Button-char
@@ -2867,7 +2867,7 @@ Transform:
   m_GameObject: {fileID: 1542218417}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.9676, y: 8.5787, z: 0}
-  m_LocalScale: {x: 1.3094618, y: -1.1750159, z: 0.01}
+  m_LocalScale: {x: 1.93, y: -1.7318418, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 625599050}
@@ -2895,7 +2895,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b3cd0b95417a9164cbc8feeb41ff1461, type: 2}
+  - {fileID: 2100000, guid: 98b4a87cd4c837d4c90e27337693dd09, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2917,7 +2917,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1542218420
+--- !u!33 &1542218421
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542218417}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1542218422
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2928,16 +2936,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0789689, y: 1.1023842, z: 1}
-  m_Center: {x: -0.0069680917, y: 0.0012485001, z: 0}
---- !u!33 &1542218421
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1542218417}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Size: {x: 0.99999994, y: 1.0000001, z: 0}
+  m_Center: {x: 0, y: 0.00000023841858, z: 0}
 --- !u!1 &1572654274
 GameObject:
   m_ObjectHideFlags: 0

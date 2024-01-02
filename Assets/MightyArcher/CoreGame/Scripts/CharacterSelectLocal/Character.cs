@@ -17,5 +17,5 @@ public class Character
     public int price;
     public bool isUnlocked;
 
-
+    public Skill char_skill;
 }

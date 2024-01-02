@@ -21,6 +21,7 @@ MonoBehaviour:
     charRight: {fileID: 1092056429115338, guid: 4a66f4f9424e60149a2de4efba40e41e, type: 3}
     price: 0
     isUnlocked: 1
+    char_skill: {fileID: 11400000, guid: 9f370f2ce7f7881489e27fce19339ef0, type: 2}
   - characterName: LAN
     characterSprite: {fileID: 21300000, guid: b7846e46775fd8f438cf86270b97d98f, type: 3}
     charID: 2
@@ -29,3 +30,4 @@ MonoBehaviour:
     charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
     price: 100
     isUnlocked: 0
+    char_skill: {fileID: 11400000, guid: bee54d585bba89449be7d1ed683ebf8d, type: 2}
