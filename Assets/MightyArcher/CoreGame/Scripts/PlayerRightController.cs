@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 
 /// <summary>
 ///Like PlayerController but it solve Right Player Problem
@@ -109,7 +109,7 @@ public class PlayerRightController : MonoBehaviour
             return;
 
         //Player pivot turn manager
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
 
             turnPlayerBody();
@@ -124,7 +124,7 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //register the initial Click Position
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             icp = new Vector2(inputPosX, inputPosY);
             print("icp: " + icp);

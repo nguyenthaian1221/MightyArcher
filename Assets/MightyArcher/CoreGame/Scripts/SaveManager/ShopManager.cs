@@ -19,6 +19,11 @@ public class ShopManager : MonoBehaviour
     public Button buyButton;
     public Button ownedButton;
 
+    public Image skillHolder;
+    public TextMeshProUGUI nameskilltxt;
+    public TextMeshProUGUI descriptiontxt;
+
+
 
     private void Start()
     {
@@ -53,6 +58,12 @@ public class ShopManager : MonoBehaviour
         var character = characterDatabases.GetCharacter(currentCharIndex);
         imageholder.sprite = character.characterSprite;
         nametxt.text = character.characterName;
+
+        skillHolder.sprite = character.char_skill.icon;
+        nameskilltxt.text = character.char_skill.name;
+        descriptiontxt.text = character.char_skill.description;
+
+
         if (character.isUnlocked)
         {
             buyButton.gameObject.SetActive(false);

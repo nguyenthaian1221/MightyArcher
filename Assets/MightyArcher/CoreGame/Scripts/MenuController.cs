@@ -113,7 +113,7 @@ public class MenuController : MonoBehaviour
                     playSfx(tapSfx);                            //play touch sound
                     StartCoroutine(animateButton(objectHit));   //touch animation effect
                     yield return new WaitForSeconds(1.0f);      //Wait for the animation to end
-                    SceneManager.LoadScene("GameWithPlayer");             //Load the next scene
+                    SceneManager.LoadScene("CharacterSelectionOffline");             //Load the next scene
                     break;
 
 

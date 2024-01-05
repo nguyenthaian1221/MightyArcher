@@ -15,4 +15,5 @@ MonoBehaviour:
   name: Rage
   idSkill: 2
   cooldownTime: 5
+  icon: {fileID: 21300000, guid: 8332e9a7150575e4988550afac634789, type: 3}
   description: x2 amount of current attack point.

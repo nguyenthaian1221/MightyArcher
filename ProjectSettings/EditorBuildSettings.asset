@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MightyArcher/CoreGame/Scenes/GameMultiplay.unity
     guid: a902361efe7baae478d17ca74d3af114
+  - enabled: 1
+    path: Assets/MightyArcher/CoreGame/Scenes/CharacterSelectionOffline.unity
+    guid: c51eeb74558d8f849a3046e3746b5ff5
   m_configObjects: {}
