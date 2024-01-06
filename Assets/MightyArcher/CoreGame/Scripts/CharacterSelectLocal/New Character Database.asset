@@ -14,20 +14,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character:
   - characterName: AN
-    characterSprite: {fileID: 21300000, guid: 122bf4126a9046347a82ad850312f8f4, type: 3}
+    characterSprite: {fileID: 21300000, guid: 55e9acbeab7f719409b42fed00f42d61, type: 3}
     charID: 1
     isOwned: 1
     charLeft: {fileID: 1210408377191846, guid: 566c0470229790f41aa32bacd9895e46, type: 3}
     charRight: {fileID: 1092056429115338, guid: 4a66f4f9424e60149a2de4efba40e41e, type: 3}
+    charLeftOffline: {fileID: 1210408377191846, guid: bf7ca1208c09e614f90edad5ec8abc6e, type: 3}
+    charRightOffline: {fileID: 1092056429115338, guid: 839f35864e8b3ad4c9c4b9d09150b01b, type: 3}
     price: 0
     isUnlocked: 1
     char_skill: {fileID: 11400000, guid: 9f370f2ce7f7881489e27fce19339ef0, type: 2}
   - characterName: LAN
-    characterSprite: {fileID: 21300000, guid: b7846e46775fd8f438cf86270b97d98f, type: 3}
+    characterSprite: {fileID: 21300000, guid: c65618d34ff72e84a8b6e7cf0c5ff353, type: 3}
     charID: 2
     isOwned: 1
     charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
     charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
+    charLeftOffline: {fileID: 1210408377191846, guid: be2527ed86489a2418c0337e5d9a1262, type: 3}
+    charRightOffline: {fileID: 1092056429115338, guid: f29edd77b1435024f9c4cb5d07f99edd, type: 3}
     price: 100
-    isUnlocked: 0
+    isUnlocked: 1
     char_skill: {fileID: 11400000, guid: bee54d585bba89449be7d1ed683ebf8d, type: 2}
+  - characterName: HAN
+    characterSprite: {fileID: 21300000, guid: 2b2ac122aed35094c8da44f2697b3160, type: 3}
+    charID: 3
+    isOwned: 0
+    charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
+    charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
+    charLeftOffline: {fileID: 1210408377191846, guid: d15979866b1276a48b29f02468985cd3, type: 3}
+    charRightOffline: {fileID: 1092056429115338, guid: 12b363ebb971986439440dee60f20316, type: 3}
+    price: 1000
+    isUnlocked: 1
+    char_skill: {fileID: 11400000, guid: 35f6400edfbbb8646b3bb1a6a968c290, type: 2}

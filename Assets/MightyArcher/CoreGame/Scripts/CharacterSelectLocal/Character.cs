@@ -14,6 +14,10 @@ public class Character
     public GameObject charLeft;
     public GameObject charRight;
 
+    public GameObject charLeftOffline;
+    public GameObject charRightOffline;
+
+
     public int price;
     public bool isUnlocked;
 
