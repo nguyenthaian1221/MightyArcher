@@ -12,7 +12,7 @@ public class MasterWeaponManager : MonoBehaviour {
 	static public int axeDamage = 30;
 
 	//the bomb itself has a little damage. But if exploded at the right time, gives more damage.
-	static public int bombDamage = 20;				
+	static public int bombDamage = 40;				
 	static public int bombExplosionDamage = 40;
 	static public float bombExplosionRadius = 3;
 

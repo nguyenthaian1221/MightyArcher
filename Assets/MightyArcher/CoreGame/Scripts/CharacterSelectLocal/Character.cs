@@ -17,6 +17,12 @@ public class Character
     public GameObject charLeftOffline;
     public GameObject charRightOffline;
 
+    public Material iconleft;
+    public Material iconright;
+
+
+
+
 
     public int price;
     public bool isUnlocked;

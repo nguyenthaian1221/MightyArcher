@@ -16,6 +16,9 @@ public class PauseManager : MonoBehaviour
     public GameObject pausePlane;
     public GameObject uiCam;
 
+    public GameObject canvasLocalPvP;
+
+
     private GameObject AdManagerObject;
 
     enum Status { PLAY, PAUSE }
@@ -140,7 +143,10 @@ public class PauseManager : MonoBehaviour
 
     void PauseGame()
     {
-
+        if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+        {
+            canvasLocalPvP.SetActive(false);
+        }
         print("Game is Paused...");
         enableInput = false;
 
@@ -158,7 +164,10 @@ public class PauseManager : MonoBehaviour
 
     void UnPauseGame()
     {
-
+        if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+        {
+            canvasLocalPvP.SetActive(true);
+        }
         print("Unpause");
         isGamePaused = false;
         uiCam.GetComponent<Camera>().enabled = true;

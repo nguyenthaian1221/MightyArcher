@@ -21,6 +21,8 @@ MonoBehaviour:
     charRight: {fileID: 1092056429115338, guid: 4a66f4f9424e60149a2de4efba40e41e, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: bf7ca1208c09e614f90edad5ec8abc6e, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: 839f35864e8b3ad4c9c4b9d09150b01b, type: 3}
+    iconleft: {fileID: 2100000, guid: 7e40f7548693cea449d15d31161e12d4, type: 2}
+    iconright: {fileID: 2100000, guid: a64ab47706095b449b9501771fcd1bfd, type: 2}
     price: 0
     isUnlocked: 1
     char_skill: {fileID: 11400000, guid: 9f370f2ce7f7881489e27fce19339ef0, type: 2}
@@ -32,6 +34,8 @@ MonoBehaviour:
     charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: be2527ed86489a2418c0337e5d9a1262, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: f29edd77b1435024f9c4cb5d07f99edd, type: 3}
+    iconleft: {fileID: 2100000, guid: 527b84c7869b91f4c93a710ee28a9189, type: 2}
+    iconright: {fileID: 2100000, guid: ad4a5b776a4965b48ac97a322a174e2e, type: 2}
     price: 100
     isUnlocked: 1
     char_skill: {fileID: 11400000, guid: bee54d585bba89449be7d1ed683ebf8d, type: 2}
@@ -43,6 +47,8 @@ MonoBehaviour:
     charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: d15979866b1276a48b29f02468985cd3, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: 12b363ebb971986439440dee60f20316, type: 3}
+    iconleft: {fileID: 2100000, guid: 260dd5059b9694645b4fff6912683e5a, type: 2}
+    iconright: {fileID: 2100000, guid: ac388cce9c32a3e42951f85f1965a740, type: 2}
     price: 1000
     isUnlocked: 1
     char_skill: {fileID: 11400000, guid: 35f6400edfbbb8646b3bb1a6a968c290, type: 2}

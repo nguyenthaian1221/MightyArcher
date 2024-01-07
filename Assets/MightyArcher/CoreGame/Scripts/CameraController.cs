@@ -44,28 +44,31 @@ public class CameraController : MonoBehaviour
         targetToFollow = null;
         startMoveIsDoneFlag = false;
 
-        player = GameObject.FindGameObjectWithTag("Player");
 
         if (SceneManager.GetActiveScene().name.Equals("Game"))
         {
+
+            player = GameObject.FindGameObjectWithTag("Player");
             enemy = GameObject.FindGameObjectWithTag("enemy");
         }
 
-        if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
-        {
-            playerRight = GameObject.FindGameObjectWithTag("player2");
-        }
+      
 
     }
 
 
     void Start()
     {
+        if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+        {
+            FindObjectFromOutsideClass();
+
+        }
 
         if (performStartMove)
         {
             //start the demo, by moving towards enemy's position and then back to player
-          
+
             if (SceneManager.GetActiveScene().name.Equals("Game"))
             {
                 StartCoroutine(runDemo());
@@ -99,7 +102,7 @@ public class CameraController : MonoBehaviour
         float cameraSpeed = 0.30f;
         float t = 0;
 
-      
+
 
 
         while (t < 1)
@@ -293,6 +296,13 @@ public class CameraController : MonoBehaviour
             //always save camera's current pos in an external variable, for later use
             cameraCurrentPos = transform.position;
         }
+    }
+
+
+    public void FindObjectFromOutsideClass()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerRight = GameObject.FindGameObjectWithTag("player2");
     }
 
 

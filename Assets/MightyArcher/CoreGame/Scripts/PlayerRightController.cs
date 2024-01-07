@@ -34,6 +34,14 @@ public class PlayerRightController : MonoBehaviour
     public AudioClip[] shootSfx;
     public AudioClip[] hitSfx;
 
+
+    [Header("Skills")]
+    public GameObject shield;
+    public CharacterDatabase character;
+    private int indexCharRight;
+    private bool isBuffedDame;
+    private bool isBuffedShield;
+
     //private settings
     private Vector2 icp;                            //initial Click Position
     private Ray inputRay;
@@ -61,6 +69,7 @@ public class PlayerRightController : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        indexCharRight = PvpManager.charindex2;
         icp = new Vector2(0, 0);
         infoPanel.SetActive(false);
         shootDirectionVector = new Vector3(0, 0, 0);
@@ -132,7 +141,7 @@ public class PlayerRightController : MonoBehaviour
         }
 
         //clear the initial Click Position
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
         {
 
             //only shoot if there is enough power applied to the shoot
@@ -346,7 +355,61 @@ public class PlayerRightController : MonoBehaviour
     }
 
 
+    public void HealHP(int healAmount)
+    {
+        playerCurrentHealth += healAmount;
+        if (playerCurrentHealth > playerHealth)
+        {
+            playerCurrentHealth = playerHealth;
+        }
+
+    }
+
+    public void TakeDamage(int dame)
+    {
+        if (!GameController.map_BuffDame)
+        {
+            playerCurrentHealth -= dame;
+        }
+        else
+        {
+            playerCurrentHealth -= 2 * dame;
+        }
+
+    }
 
 
+    public void CometDamePlayerRight(int dame)
+    {
+        playerCurrentHealth -= dame;
+    }
 
+    // Active skills
+    public void HealHPSkill()
+    {
+        Debug.Log("Player Right healed");
+        HealHP(50);
+    }
+
+    public void ShieldSkill()
+    {
+        Debug.Log("Player Right buffed shield");
+        isBuffedShield = true;
+    }
+
+    public void TurnOffShield()
+    {
+        isBuffedShield = false;
+    }
+
+    public void AtkbuffSkill()
+    {
+        Debug.Log("Player Right buffed atk");
+        isBuffedDame = true;
+    }
+
+    public void TurnOffAtkfBk()
+    {
+        isBuffedShield = false;
+    }
 }

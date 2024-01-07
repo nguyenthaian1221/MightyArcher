@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.CloudSave;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 public class GameController : MonoBehaviour
 {
 
@@ -20,6 +22,9 @@ public class GameController : MonoBehaviour
     public groundTypes groundType = groundTypes.flat;   //we have two options here. default is flat ground.
     public GameObject flatBg;                           //reference to flag ground object.
     public GameObject curvedBg;                         //reference to curved ground holder object.
+
+    [SerializeField]
+    private CharacterDatabase characterDatabase;
 
 
     // Static variables //
@@ -69,6 +74,10 @@ public class GameController : MonoBehaviour
     #endregion
 
 
+    [SerializeField]
+    private Transform[] m_startingPositions;
+
+
 
     public GameObject uiEnemyHealthBar;
     public GameObject uiEnemyInfoPanel;
@@ -78,6 +87,10 @@ public class GameController : MonoBehaviour
 
     private GameObject playerLeft;
     private GameObject playerRight;
+    private int indexchar1;
+    private int indexchar2;
+
+
 
     private GameObject enemy;
     private GameObject cam;
@@ -85,6 +98,12 @@ public class GameController : MonoBehaviour
     public GameObject gameoverManager;
     public GameObject uiGameStateLabel;
     public GameObject uiYouWon;
+
+    [Header("Icons")]
+    public GameObject leftHudIcon;
+    public GameObject rightHudIcon;
+    public GameObject leftInfoIcon;
+    public GameObject rightInfoIcon;
 
     [Header("BirdHunt Game Mode settings")]
     public GameObject uiBirdhuntStatPanel;
@@ -112,14 +131,34 @@ public class GameController : MonoBehaviour
 
 
     //Show Alert Text
+    [Header("Animation")]
     [SerializeField] GameObject healAlertText;
+    [SerializeField] GameObject healAnim;
+    [SerializeField] GameObject buffDameAnim;
+    [SerializeField] GameObject cometShowerAnim;
 
 
+    [Header("Buff/Debuff")]
+    public int map_heal_amount = 50;
+    //public int map_heal_amount = 50;
+    public int map_damage_amount = 50;
+    [HideInInspector]
+    public static bool map_BuffDame = false;
 
 
     //Skill Cooldown
-    public int skillRoundCountPlayerLeft = -1;
-    public int skillRoundCountPlayerRight = -1;
+    [Header("Skills")]
+    public GameObject leftskillBtn;
+    public GameObject rightskillBtn;
+    public Image leftskillImage;
+    public Image rightskillImage;
+    public static int skillRoundCountPlayerLeft = -1;
+    public static int skillRoundCountPlayerRight = -1;
+    private int timeToCooldownLeft;
+    private int timeToCooldownRight;
+
+    public static int roundExpireLeft = -1;
+    public static int roundExpireRight = -1;
 
 
 
@@ -169,16 +208,24 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        //cache main objects
-        playerLeft = GameObject.FindGameObjectWithTag("Player");
-        playerLeftHBSC = uiPlayerLeftHealthBar.transform.localScale;
-
 
         cam = GameObject.FindGameObjectWithTag("MainCamera");
         uiCam = GameObject.FindGameObjectWithTag("uiCamera");
 
+        //cache main objects
+
+
+        if (SceneManager.GetActiveScene().name.Equals("BirdHunt"))
+        {
+            playerLeft = GameObject.FindGameObjectWithTag("Player");
+            playerLeftHBSC = uiPlayerLeftHealthBar.transform.localScale;
+        }
+
+
         if (SceneManager.GetActiveScene().name.Equals("Game"))
         {
+            playerLeft = GameObject.FindGameObjectWithTag("Player");
+            playerLeftHBSC = uiPlayerLeftHealthBar.transform.localScale;
             enemy = GameObject.FindGameObjectWithTag("enemy");        //  Only in computer mode
             enemyHBSC = uiEnemyHealthBar.transform.localScale;
         }
@@ -186,8 +233,35 @@ public class GameController : MonoBehaviour
         if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
         {
 
+            // Check data from PvpManager
+            indexchar1 = PvpManager.charindex1;
+            indexchar2 = PvpManager.charindex2;
+
+            // Random 2 pos
+            int startposchar1 = Random.Range(0, 4);
+            int startposchar2 = Random.Range(4, 8);
+            // Spawn chars
+            Instantiate(characterDatabase.GetCharacter(indexchar1).charLeftOffline, m_startingPositions[startposchar1].position, Quaternion.identity);
+            Instantiate(characterDatabase.GetCharacter(indexchar2).charRightOffline, m_startingPositions[startposchar2].position, Quaternion.identity);
+
+            // cached data
+            playerLeft = GameObject.FindGameObjectWithTag("Player");
+            playerLeftHBSC = uiPlayerLeftHealthBar.transform.localScale;
             playerRight = GameObject.FindGameObjectWithTag("player2");  // Only in PvP mode
             playerRightHBSC = uiRightPlayerHealthBar.transform.localScale;
+
+
+            leftHudIcon.GetComponent<MeshRenderer>().material = characterDatabase.GetCharacter(indexchar1).iconleft;
+            rightHudIcon.GetComponent<MeshRenderer>().material = characterDatabase.GetCharacter(indexchar2).iconright;
+            leftInfoIcon.GetComponent<MeshRenderer>().material = characterDatabase.GetCharacter(indexchar1).iconleft;
+            rightInfoIcon.GetComponent<MeshRenderer>().material = characterDatabase.GetCharacter(indexchar2).iconright;
+
+            //Set Sprite for skills btn
+            leftskillImage.sprite = characterDatabase.GetCharacter(indexchar1).char_skill.icon;
+            rightskillImage.sprite = characterDatabase.GetCharacter(indexchar2).char_skill.icon;
+            timeToCooldownLeft = characterDatabase.GetCharacter(indexchar1).char_skill.cooldownTime;
+            timeToCooldownRight = characterDatabase.GetCharacter(indexchar2).char_skill.cooldownTime;
+
         }
 
         gameoverManager.SetActive(false);
@@ -584,7 +658,46 @@ public class GameController : MonoBehaviour
         }
 
 
-        //2. then check if the situation meets a game over
+
+
+
+
+        //2. map action
+
+        healAlertText.SetActive(false);
+        healAnim.SetActive(false);
+        buffDameAnim.SetActive(false);
+        cometShowerAnim.SetActive(false);
+
+        switch (round)
+        {
+
+            case 10:
+                HealRound();
+                CamOnMedianPoint();
+                yield return new WaitForSeconds(2);
+                healAlertText.SetActive(false);
+                healAnim.SetActive(false);
+                break;
+
+            case 20:
+                BuffDame();
+                yield return new WaitForSeconds(2);
+                buffDameAnim.SetActive(false);
+                break;
+            case 30:
+                Meteoroid();
+                yield return new WaitForSeconds(2);
+                cometShowerAnim.SetActive(false);
+                break;
+            case 40:
+                Meteoroid();
+                yield return new WaitForSeconds(2);
+                cometShowerAnim.SetActive(false);
+                break;
+        }
+
+        //3. then check if the situation meets a game over
         //check for game finish state
         if (playerLeft.GetComponent<PlayerController>().playerCurrentHealth <= 0)
         {
@@ -609,39 +722,11 @@ public class GameController : MonoBehaviour
         }
 
 
-
-        //3. if none of the above is true, continue with the turn-change...
+        //4. if none of the above is true, continue with the turn-change...
         // Special buff will hapens here 
-
-
-        healAlertText.SetActive(false);
-
-        switch (round)
-        {
-
-            case 4:
-                HealRound();
-                CamOnMedianPoint();
-                yield return new WaitForSeconds(2);
-                healAlertText.SetActive(false);
-                break;
-
-            case 20:
-                BuffDame();
-                break;
-            case 40:
-                Meteoroid();
-                break;
-            case 60:
-                Meteoroid();
-                break;
-        }
-
-
 
         round++;    //game starts with round 1
         print("Round: " + round);
-
 
 
         //if round carry is odd, its players turn, otherwise its opponent's turn
@@ -653,7 +738,10 @@ public class GameController : MonoBehaviour
 
             playersLeftTurn = true;
             playersRightTurn = false;
+
             whosTurn = "Player Left";
+            leftskillBtn.SetActive(true);
+            rightskillBtn.SetActive(false);
 
             yield return new WaitForSeconds(0.9f);
 
@@ -673,7 +761,8 @@ public class GameController : MonoBehaviour
             playersLeftTurn = false;
             playersRightTurn = true;
             whosTurn = "Player Right";
-
+            leftskillBtn.SetActive(false);
+            rightskillBtn.SetActive(true);
             yield return new WaitForSeconds(0.9f);
 
             //reset camera's old target
@@ -922,21 +1011,24 @@ public class GameController : MonoBehaviour
 
     private void Meteoroid()
     {
-        Debug.LogError("Meteoroid");
-
+        cometShowerAnim.SetActive(true);
+        playerLeft.GetComponent<PlayerController>().CometDamePlayerLeft(map_damage_amount);
+        playerRight.GetComponent<PlayerRightController>().CometDamePlayerRight(map_damage_amount);
         //CamOnMedianPoint();
     }
 
     private void BuffDame()
     {
-        Debug.LogError("BuffDame");
-        // CamOnMedianPoint();
+        buffDameAnim.SetActive(true);
+        map_BuffDame = true;  // valid forever
     }
 
     private void HealRound()
     {
         healAlertText.SetActive(true);
-        Debug.LogError("BuffHeal");
+        healAnim.SetActive(true);
+        playerLeft.GetComponent<PlayerController>().HealHP(map_heal_amount);
+        playerRight.GetComponent<PlayerRightController>().HealHP(map_heal_amount);
         //CamOnMedianPoint();
     }
 
@@ -947,8 +1039,44 @@ public class GameController : MonoBehaviour
     }
 
 
+    public void SkillForleftPlayer()
+    {
+        if (Abilities.isCooldownLeft) return;
 
+        skillRoundCountPlayerLeft = round;
+        roundExpireLeft = skillRoundCountPlayerLeft + timeToCooldownLeft;
+        switch (indexchar1)
+        {
+            case 0:
+                playerLeft.GetComponent<PlayerController>().ShieldSkill();
+                break;
+            case 1:
+                playerLeft.GetComponent<PlayerController>().HealHPSkill();
+                break;
+            case 2:
+                playerLeft.GetComponent<PlayerController>().AtkbuffSkill();
+                break;
+        }
+    }
 
+    public void SkillForRightPlayer()
+    {
+        if (Abilities.isCooldownRight) return;
 
+        skillRoundCountPlayerRight = round;
+        roundExpireRight = skillRoundCountPlayerRight + timeToCooldownRight;
+        switch (indexchar2)
+        {
+            case 0:
+                playerRight.GetComponent<PlayerRightController>().ShieldSkill();
+                break;
+            case 1:
+                playerRight.GetComponent<PlayerRightController>().HealHPSkill();
+                break;
+            case 2:
+                playerRight.GetComponent<PlayerRightController>().AtkbuffSkill();
+                break;
+        }
+    }
 
 }

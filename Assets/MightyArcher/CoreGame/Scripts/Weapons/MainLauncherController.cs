@@ -142,7 +142,7 @@ public class MainLauncherController : MonoBehaviour
         if (arrowType == arrowTypes.Bomb)
         {
             rotateWeapon(150);
-            explodeOnTouch();
+            //explodeOnTouch();
         }
 
         //Only for birdhunt & appleshot game modes.
@@ -345,7 +345,7 @@ public class MainLauncherController : MonoBehaviour
 
 
 
-        //Collision with enemy
+        //Collision with enemy        || Will Coming Soon
         if ((oTag == "enemyBody" || oTag == "enemyLeg" || oTag == "enemyHead") &&
              (gameObject.tag == "arrow" || gameObject.tag == "axe" || gameObject.tag == "bomb"))
         {
@@ -396,9 +396,10 @@ public class MainLauncherController : MonoBehaviour
 
 
         //Collision with player left
-        if ((oTag == "playerBody" || oTag == "playerLeg" || oTag == "playerHead") &&
-            (gameObject.tag == "arrow" || gameObject.tag == "axe" || gameObject.tag == "bomb"))
+        if ((oTag == "playerBody" || oTag == "playerLeg" || oTag == "playerHead"))
         {
+
+
 
             if (bypassCode)
                 yield break;
@@ -416,32 +417,75 @@ public class MainLauncherController : MonoBehaviour
 
             trailFx.SetActive(false);
             GameController.isArrowInScene = false;
-            transform.parent = other.collider.gameObject.transform;
 
-            //create blood fx
-            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
-            blood.name = "BloodFX";
-            Destroy(blood, 1.5f);
 
-            //manage victim's helath status
-            playerLeft.GetComponent<PlayerController>().playerCurrentHealth -= damage;
+            if (gameObject.tag == "arrow" || gameObject.tag == "axe")
+            {
 
-            //play hit sfx
-            playerLeft.GetComponent<PlayerController>().playRandomHitSound();
 
-            //change the turn
-            if (SceneManager.GetActiveScene().name.Equals("Game"))
-                playerLeft.GetComponent<PlayerController>().changeTurns();
+                transform.parent = other.collider.gameObject.transform;
 
-            if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
-                playerLeft.GetComponent<PlayerController>().changeTurnsPlayer();
+                //create blood fx
+                GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+                blood.name = "BloodFX";
+                Destroy(blood, 1.5f);
+
+
+                //play hit sfx
+                playerLeft.GetComponent<PlayerController>().playRandomHitSound();
+
+                //change the turn
+                if (SceneManager.GetActiveScene().name.Equals("Game"))
+                {
+                    playerLeft.GetComponent<PlayerController>().playerCurrentHealth -= damage;
+                    playerLeft.GetComponent<PlayerController>().changeTurns();
+                }
+
+
+                if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+                {
+                    playerLeft.GetComponent<PlayerController>().TakeDamage(damage);
+                    playerLeft.GetComponent<PlayerController>().changeTurnsPlayer();
+                }
+
+            }
+            // Trigger Explosion
+            else if (gameObject.tag == "bomb")
+            {
+                GameObject exp = Instantiate(explosionFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+                exp.name = "Explosion";
+
+
+
+                //play hit sfx
+                playerLeft.GetComponent<PlayerController>().playRandomHitSound();
+
+                //change the turn
+                if (SceneManager.GetActiveScene().name.Equals("Game"))
+                {
+                    //manage victim's helath status
+                    playerLeft.GetComponent<PlayerController>().playerCurrentHealth -= damage;
+                    playerLeft.GetComponent<PlayerController>().changeTurns();
+                }
+
+
+                if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+                {
+                    playerLeft.GetComponent<PlayerController>().TakeDamage(damage);
+                    playerLeft.GetComponent<PlayerController>().changeTurnsPlayer();
+                }
+
+                Destroy(gameObject);
+            }
+
+
+
 
         }
 
 
         //Collision with player Right
-        if ((oTag == "playerBodyR" || oTag == "playerLegR" || oTag == "playerHeadR") &&
-            (gameObject.tag == "arrow" || gameObject.tag == "axe" || gameObject.tag == "bomb"))
+        if ((oTag == "playerBodyR" || oTag == "playerLegR" || oTag == "playerHeadR"))
         {
 
             if (bypassCode)
@@ -460,24 +504,59 @@ public class MainLauncherController : MonoBehaviour
 
             trailFx.SetActive(false);
             GameController.isArrowInScene = false;
-            transform.parent = other.collider.gameObject.transform;
-
-            //create blood fx
-            GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
-            blood.name = "BloodFX";
-            Destroy(blood, 1.5f);
-
-            //manage victim's helath status
-            playerRight.GetComponent<PlayerRightController>().playerCurrentHealth -= damage;
-
-            //play hit sfx
-            playerRight.GetComponent<PlayerRightController>().playRandomHitSound();
 
 
+            if (gameObject.tag == "arrow" || gameObject.tag == "axe")
+            {
 
-            //change the turn
-            if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
-                playerRight.GetComponent<PlayerRightController>().changeTurnsPlayer();
+                transform.parent = other.collider.gameObject.transform;
+
+                //create blood fx
+                GameObject blood = Instantiate(bloodFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+                blood.name = "BloodFX";
+                Destroy(blood, 1.5f);
+
+                //manage victim's helath status
+                //playerRight.GetComponent<PlayerRightController>().playerCurrentHealth -= damage;
+
+                //play hit sfx
+                playerRight.GetComponent<PlayerRightController>().playRandomHitSound();
+
+
+
+                //change the turn
+                if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+                {
+                    playerRight.GetComponent<PlayerRightController>().TakeDamage(damage);
+                    playerRight.GetComponent<PlayerRightController>().changeTurnsPlayer();
+                }
+
+            }
+            // Trigger Explosion
+            else if (gameObject.tag == "bomb")
+            {
+                GameObject exp = Instantiate(explosionFx, other.contacts[0].point + new Vector3(0, 0, -1.5f), Quaternion.Euler(0, 0, 0)) as GameObject;
+                exp.name = "Explosion";
+
+                //manage victim's helath status
+                //playerRight.GetComponent<PlayerRightController>().playerCurrentHealth -= damage;
+
+                //play hit sfx
+                playerRight.GetComponent<PlayerRightController>().playRandomHitSound();
+
+
+
+                //change the turn
+                if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+                {
+                    playerRight.GetComponent<PlayerRightController>().TakeDamage(damage);
+                    playerRight.GetComponent<PlayerRightController>().changeTurnsPlayer();
+                }
+                Destroy(gameObject);
+            }
+
+
+
 
         }
 

@@ -37,6 +37,14 @@ public class PlayerController : MonoBehaviour
     public AudioClip[] hitSfx;
 
 
+    [Header("Skills")]
+    public GameObject shield;
+    public CharacterDatabase character;
+    private int indexCharLeft;
+    private bool isBuffedDame;
+    private bool isBuffedShield;
+
+
     //private settings
     private Vector2 icp;                            //initial Click Position
     private Ray inputRay;
@@ -62,6 +70,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        indexCharLeft = PvpManager.charindex1;
         icp = new Vector2(0, 0);
         infoPanel.SetActive(false);
         shootDirectionVector = new Vector3(0, 0, 0);
@@ -341,8 +350,66 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public void HealHP(int healAmount)
+    {
+        playerCurrentHealth += healAmount;
+        if (playerCurrentHealth > playerHealth)
+        {
+            playerCurrentHealth = playerHealth;
+        }
+
+    }
 
 
+    public void TakeDamage(int dame)
+    {
+        if (!GameController.map_BuffDame)
+        {
+            playerCurrentHealth -= dame;
+        }
+        else
+        {
+            playerCurrentHealth -= 2 * dame;
+        }
 
+    }
+
+
+    public void CometDamePlayerLeft(int dame)
+    {
+        playerCurrentHealth -= dame;
+    }
+
+
+    // Active skills
+    // Active skills
+    public void HealHPSkill()
+    {
+        Debug.Log("Player Left healed");
+        HealHP(50);
+    }
+
+    //Shields 
+    public void ShieldSkill()
+    {
+        Debug.Log("Player Left buffed shield");
+        isBuffedShield = true;
+    }
+
+    public void TurnOffShield()
+    {
+        isBuffedShield = false;
+    }
+
+    public void AtkbuffSkill()
+    {
+        Debug.Log("Player Left buffed atk");
+        isBuffedDame = true;
+    }
+
+    public void TurnOffAtkfBk()
+    {
+        isBuffedShield = false;
+    }
 }
 
