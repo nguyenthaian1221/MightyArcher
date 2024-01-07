@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Shield
   idSkill: 3
   cooldownTime: 10
+  validTime: 3
   icon: {fileID: 21300000, guid: b95d7460b130b7945a480dadb0442ca8, type: 3}
-  description: Activate a shield for  next round.
+  description: Activate a shield for next 2 turn. Shield reduce 60% damage

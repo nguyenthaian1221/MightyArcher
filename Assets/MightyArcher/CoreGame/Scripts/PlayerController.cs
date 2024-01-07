@@ -39,10 +39,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Skills")]
     public GameObject shield;
+    public GameObject buffDisplay;
     public CharacterDatabase character;
     private int indexCharLeft;
-    private bool isBuffedDame;
-    private bool isBuffedShield;
+    [HideInInspector]
+    public bool isBuffedDame;
+    [HideInInspector]
+    public bool isBuffedShield;
 
 
     //private settings
@@ -377,7 +380,19 @@ public class PlayerController : MonoBehaviour
 
     public void CometDamePlayerLeft(int dame)
     {
-        playerCurrentHealth -= dame;
+
+        if (isBuffedShield)
+        {
+            playerCurrentHealth -= (dame * 4 / 10);
+        }
+        else
+        {
+            playerCurrentHealth -= dame;
+        }
+
+
+
+
     }
 
 
@@ -394,22 +409,30 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Player Left buffed shield");
         isBuffedShield = true;
+        shield.SetActive(true);
+        //GameController.isStillValidLeft = true;
     }
 
     public void TurnOffShield()
     {
         isBuffedShield = false;
+        shield.SetActive(false);
+        //GameController.isStillValidLeft = false;
     }
 
     public void AtkbuffSkill()
     {
         Debug.Log("Player Left buffed atk");
         isBuffedDame = true;
+        buffDisplay.SetActive(true);
+        //GameController.isStillValidLeft = true;
     }
 
-    public void TurnOffAtkfBk()
+    public void TurnOffAtkfBuff()
     {
-        isBuffedShield = false;
+        isBuffedDame = false;
+        buffDisplay.SetActive(false);
+        //GameController.isStillValidLeft = false;
     }
 }
 

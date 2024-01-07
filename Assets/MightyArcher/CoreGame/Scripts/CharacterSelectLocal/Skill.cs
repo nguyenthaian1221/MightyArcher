@@ -9,6 +9,7 @@ public class Skill : ScriptableObject
     public string name;
     public int idSkill;
     public int cooldownTime;
+    public int validTime;
     public Sprite icon;
     public string description;
 }

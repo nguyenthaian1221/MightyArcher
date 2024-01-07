@@ -27,9 +27,14 @@ public class Abilities : MonoBehaviour
 
     private void Update()
     {
-        AbilityLeft();
-        AbilityRight();
-
+        if (GameController.playersLeftTurn)
+        {
+            AbilityLeft();
+        }
+        else
+        {
+            AbilityRight();
+        }
     }
 
 

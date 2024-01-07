@@ -156,9 +156,17 @@ public class GameController : MonoBehaviour
     public static int skillRoundCountPlayerRight = -1;
     private int timeToCooldownLeft;
     private int timeToCooldownRight;
+    private int timeValidBuffLeft;
+    private int timeValidBuffRight;
 
-    public static int roundExpireLeft = -1;
+    public static int roundExpireLeft = -1;   // has completely cooldown
     public static int roundExpireRight = -1;
+
+    public static int roundValidBuffLeft;
+    public static int roundValidBuffRight;
+
+    //public static bool isStillValidLeft;      //use for both shield and buff dame
+    //public static bool isStillValidRight;
 
 
 
@@ -261,6 +269,9 @@ public class GameController : MonoBehaviour
             rightskillImage.sprite = characterDatabase.GetCharacter(indexchar2).char_skill.icon;
             timeToCooldownLeft = characterDatabase.GetCharacter(indexchar1).char_skill.cooldownTime;
             timeToCooldownRight = characterDatabase.GetCharacter(indexchar2).char_skill.cooldownTime;
+            timeValidBuffLeft = characterDatabase.GetCharacter(indexchar1).char_skill.validTime;
+            timeValidBuffRight = characterDatabase.GetCharacter(indexchar2).char_skill.validTime;
+
 
         }
 
@@ -728,6 +739,41 @@ public class GameController : MonoBehaviour
         round++;    //game starts with round 1
         print("Round: " + round);
 
+        //5. Disable buff if neccessary
+        if (round > roundValidBuffLeft)
+        {
+            switch (indexchar1)
+            {
+                case 0:
+                    playerLeft.GetComponent<PlayerController>().TurnOffShield();
+                    break;
+                case 1:
+                    //playerLeft.GetComponent<PlayerRightController>().HealHPSkill();
+                    break;
+                case 2:
+                    playerLeft.GetComponent<PlayerController>().TurnOffAtkfBuff();
+                    break;
+            }
+        }
+
+
+        if (round > roundValidBuffRight)
+        {
+            switch (indexchar2)
+            {
+                case 0:
+                    playerRight.GetComponent<PlayerRightController>().TurnOffShield();
+                    break;
+                case 1:
+                    //playerRight.GetComponent<PlayerRightController>().HealHPSkill();
+                    break;
+                case 2:
+                    playerRight.GetComponent<PlayerRightController>().TurnOffAtkfBuff();
+                    break;
+            }
+        }
+
+
 
         //if round carry is odd, its players turn, otherwise its opponent's turn
         int carry;
@@ -1045,6 +1091,7 @@ public class GameController : MonoBehaviour
 
         skillRoundCountPlayerLeft = round;
         roundExpireLeft = skillRoundCountPlayerLeft + timeToCooldownLeft;
+        roundValidBuffLeft = skillRoundCountPlayerLeft + timeValidBuffLeft;
         switch (indexchar1)
         {
             case 0:
@@ -1065,6 +1112,7 @@ public class GameController : MonoBehaviour
 
         skillRoundCountPlayerRight = round;
         roundExpireRight = skillRoundCountPlayerRight + timeToCooldownRight;
+        roundValidBuffRight = skillRoundCountPlayerRight + timeValidBuffRight;
         switch (indexchar2)
         {
             case 0:

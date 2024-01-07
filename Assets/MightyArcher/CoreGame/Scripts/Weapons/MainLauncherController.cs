@@ -444,6 +444,17 @@ public class MainLauncherController : MonoBehaviour
 
                 if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
                 {
+                    if (playerLeft.GetComponent<PlayerController>().isBuffedShield)
+                    {
+                        damage = damage * 4 / 10;
+                    }
+
+                    if (playerRight.GetComponent<PlayerRightController>().isBuffedDame)
+                    {
+                        damage *= 2;
+                    }
+
+
                     playerLeft.GetComponent<PlayerController>().TakeDamage(damage);
                     playerLeft.GetComponent<PlayerController>().changeTurnsPlayer();
                 }
@@ -471,6 +482,17 @@ public class MainLauncherController : MonoBehaviour
 
                 if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
                 {
+
+                    if (playerLeft.GetComponent<PlayerController>().isBuffedShield)
+                    {
+                        damage = damage * 4 / 10;
+                    }
+
+                    if (playerRight.GetComponent<PlayerRightController>().isBuffedDame)
+                    {
+                        damage *= 2;
+                    }
+
                     playerLeft.GetComponent<PlayerController>().TakeDamage(damage);
                     playerLeft.GetComponent<PlayerController>().changeTurnsPlayer();
                 }
@@ -523,10 +545,20 @@ public class MainLauncherController : MonoBehaviour
                 playerRight.GetComponent<PlayerRightController>().playRandomHitSound();
 
 
-
+               
                 //change the turn
                 if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
                 {
+                    if (playerRight.GetComponent<PlayerRightController>().isBuffedShield)
+                    {
+                        damage = damage * 4 / 10;
+                    }
+
+                    if (playerLeft.GetComponent<PlayerController>().isBuffedDame)
+                    {
+                        damage *= 2;
+                    }
+
                     playerRight.GetComponent<PlayerRightController>().TakeDamage(damage);
                     playerRight.GetComponent<PlayerRightController>().changeTurnsPlayer();
                 }
@@ -549,6 +581,16 @@ public class MainLauncherController : MonoBehaviour
                 //change the turn
                 if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
                 {
+                    if (playerRight.GetComponent<PlayerRightController>().isBuffedShield)
+                    {
+                        damage = damage * 4 / 10;
+                    }
+
+                    if (playerLeft.GetComponent<PlayerController>().isBuffedDame)
+                    {
+                        damage *= 2;
+                    }
+
                     playerRight.GetComponent<PlayerRightController>().TakeDamage(damage);
                     playerRight.GetComponent<PlayerRightController>().changeTurnsPlayer();
                 }

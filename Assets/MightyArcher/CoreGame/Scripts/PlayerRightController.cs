@@ -37,10 +37,13 @@ public class PlayerRightController : MonoBehaviour
 
     [Header("Skills")]
     public GameObject shield;
+    public GameObject buffDisplay;
     public CharacterDatabase character;
     private int indexCharRight;
-    private bool isBuffedDame;
-    private bool isBuffedShield;
+    [HideInInspector]
+    public bool isBuffedDame;
+    [HideInInspector]
+    public bool isBuffedShield;
 
     //private settings
     private Vector2 icp;                            //initial Click Position
@@ -299,7 +302,7 @@ public class PlayerRightController : MonoBehaviour
         {
             t += Time.deltaTime * 3;
 
-            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle-360, 0, t));
+            playerTurnPivot.transform.rotation = Quaternion.Euler(0, 0, Mathf.SmoothStep(currentRotationAngle - 360, 0, t));
             yield return 0;
         }
 
@@ -381,7 +384,14 @@ public class PlayerRightController : MonoBehaviour
 
     public void CometDamePlayerRight(int dame)
     {
-        playerCurrentHealth -= dame;
+        if (isBuffedShield)
+        {
+            playerCurrentHealth -= (dame * 4 / 10);
+        }
+        else
+        {
+            playerCurrentHealth -= dame;
+        }
     }
 
     // Active skills
@@ -395,21 +405,29 @@ public class PlayerRightController : MonoBehaviour
     {
         Debug.Log("Player Right buffed shield");
         isBuffedShield = true;
+        shield.SetActive(true);
+        //GameController.isStillValidRight = true;
     }
 
     public void TurnOffShield()
     {
         isBuffedShield = false;
+        shield.SetActive(false);
+        //GameController.isStillValidRight = false;
     }
 
     public void AtkbuffSkill()
     {
         Debug.Log("Player Right buffed atk");
         isBuffedDame = true;
+        buffDisplay.SetActive(true);
+        //GameController.isStillValidRight = true;
     }
 
-    public void TurnOffAtkfBk()
+    public void TurnOffAtkfBuff()
     {
-        isBuffedShield = false;
+        isBuffedDame = false;
+        buffDisplay.SetActive(false);
+        //GameController.isStillValidRight = false;
     }
 }
