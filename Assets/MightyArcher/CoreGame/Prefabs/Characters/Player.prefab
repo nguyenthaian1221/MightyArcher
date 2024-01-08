@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 54667381346456254}
   - component: {fileID: 114273778404365734}
   - component: {fileID: 82930210987304946}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -138,8 +138,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0874195, y: 0.25076175, z: 1}
-  m_Center: {x: -0.37153482, y: -1.7187012, z: 0}
+  m_Size: {x: 1.0874195, y: 3.091632, z: 1}
+  m_Center: {x: -0.37153482, y: -0.2982661, z: 0}
 --- !u!54 &54667381346456254
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 54463004603139230}
   - component: {fileID: 82557528819940592}
   - component: {fileID: 3159373133874512998}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: char2Right
   m_TagString: player2
   m_Icon: {fileID: 0}
@@ -51,8 +51,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0874195, y: 0.25076175, z: 1}
-  m_Center: {x: 0.53, y: -1.7187012, z: 0}
+  m_Size: {x: 1.0874195, y: 3.0051794, z: 1}
+  m_Center: {x: 0.53, y: -0.3414924, z: 0}
 --- !u!54 &54463004603139230
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -434,8 +434,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.44, y: 0.655339, z: 1}
-  m_Center: {x: 0.0000056225, y: 0.12766953, z: 0}
+  m_Size: {x: 0.64817387, y: 0.7533038, z: 1}
+  m_Center: {x: -0.018362746, y: 0.078686886, z: -0}
 --- !u!23 &23541036827534604
 MeshRenderer:
   m_ObjectHideFlags: 0

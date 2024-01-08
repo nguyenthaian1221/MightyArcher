@@ -55,6 +55,10 @@ public class MainLauncherController : MonoBehaviour
     //private bool bombExplosionByPlayer;		//flag to set if explosion has been done by player input
     //private bool bombExplosionByEnemy;		//flag to set if explosion has been done by enemy AI
 
+    //Add Force When Explosion
+    [SerializeField]
+    private GameObject posExplore;
+
 
     void Awake()
     {
@@ -291,6 +295,11 @@ public class MainLauncherController : MonoBehaviour
         //check for collision just once
         if (isChecking)
             yield break;
+
+        if (SceneManager.GetActiveScene().name.Equals("GameWithPlayer"))
+        {
+            posExplore.GetComponent<testphysic>().Explosion();
+        }
 
         isChecking = true;
         string oTag = other.collider.gameObject.tag;    //tag of the object we had collision with

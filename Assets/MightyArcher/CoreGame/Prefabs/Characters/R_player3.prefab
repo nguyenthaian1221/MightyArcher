@@ -162,7 +162,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1210408377191846}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15a0117c069d6864ea7a32ff7fdd210c, type: 3}
   m_Name: 
@@ -186,6 +186,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7224af3f83d8a014eb8fd22e90a6188b, type: 3}
   - {fileID: 8300000, guid: 5119cfaffc969504d9780e3733d1d7f5, type: 3}
   shield: {fileID: 0}
+  buffDisplay: {fileID: 0}
   character: {fileID: 0}
   isBuffedDame: 0
   isBuffedShield: 0

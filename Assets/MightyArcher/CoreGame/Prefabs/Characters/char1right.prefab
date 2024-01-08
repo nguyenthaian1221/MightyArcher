@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 54463004603139230}
   - component: {fileID: 82557528819940592}
   - component: {fileID: 3159373133874512998}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: char1right
   m_TagString: player2
   m_Icon: {fileID: 0}
@@ -51,8 +51,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0874195, y: 0.25076175, z: 1}
-  m_Center: {x: 0.53, y: -1.7187012, z: 0}
+  m_Size: {x: 1.0874195, y: 2.8481967, z: 1}
+  m_Center: {x: 0.53, y: -0.41998374, z: 0}
 --- !u!54 &54463004603139230
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -254,8 +254,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.59, y: 0.85, z: 1}
-  m_Center: {x: 0.03, y: 0.01, z: 0}
+  m_Size: {x: 0.59, y: 0.5319895, z: 1}
+  m_Center: {x: 0.029999997, y: -0.23495598, z: 0}
 --- !u!23 &23855780494011056
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -434,8 +434,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.44, y: 0.40702555, z: 1}
-  m_Center: {x: 0.0000056266786, y: 0.003512621, z: 0}
+  m_Size: {x: 0.8110627, y: 0.7619548, z: 0.9999999}
+  m_Center: {x: -0.10485856, y: -0.109419286, z: 0}
 --- !u!23 &23541036827534604
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -617,8 +617,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.26, y: 0.39, z: 1}
-  m_Center: {x: -0.14, y: -0.19, z: 0}
+  m_Size: {x: 0.64232016, y: 0.67403424, z: 0.9999999}
+  m_Center: {x: -0.059287757, y: 0.0021419395, z: 0}
 --- !u!23 &23201880441214420
 MeshRenderer:
   m_ObjectHideFlags: 0
