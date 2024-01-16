@@ -757,11 +757,21 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
     private float playerRightHealthScale;                //player health bar real-time scale
 
 
-
     /// <summary>
     /// INIT
     /// </summary>
 
+    [SerializeField]
+    private CharacterDataSO[] m_characterDatas;
+    [SerializeField]
+    private CharacterDatabase charsDB;
+
+
+    [Header("Icons")]
+    public GameObject leftHudIcon;
+    public GameObject rightHudIcon;
+    public GameObject leftInfoIcon;
+    public GameObject rightInfoIcon;
 
 
 
@@ -841,6 +851,14 @@ public class GameNetworkController : SingletonNetwork<GameNetworkController>
         InitAwake();
         StartCoroutine(activateTap());
         RoundTurn();
+
+
+        // hard code set icon. Because I haven't found a better way yet
+        leftHudIcon.GetComponent<MeshRenderer>().material = charsDB.GetCharacter(m_characterDatas[0].charId).iconleft;
+        rightHudIcon.GetComponent<MeshRenderer>().material = charsDB.GetCharacter(m_characterDatas[1].charId).iconright;
+        leftInfoIcon.GetComponent<MeshRenderer>().material = charsDB.GetCharacter(m_characterDatas[0].charId).iconleft;
+        rightInfoIcon.GetComponent<MeshRenderer>().material = charsDB.GetCharacter(m_characterDatas[1].charId).iconright;
+
     }
 
 

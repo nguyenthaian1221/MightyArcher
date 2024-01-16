@@ -964,6 +964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pausePlane: {fileID: 1663856294}
   uiCam: {fileID: 870637043}
+  canvasLocalPvP: {fileID: 0}
 --- !u!1 &321889942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2291,6 +2292,14 @@ MonoBehaviour:
   gameoverManager: {fileID: 2084807447}
   uiGameStateLabel: {fileID: 541385857}
   uiYouWon: {fileID: 1623808880}
+  m_characterDatas:
+  - {fileID: 11400000, guid: 6ae4dadddfef46f4c9bd5b4a5e60800e, type: 2}
+  - {fileID: 11400000, guid: 58b564c9d71976a4884d4fddb101c340, type: 2}
+  charsDB: {fileID: 11400000, guid: fccaa29d5f995ef4b8c5ee7a13b9d531, type: 2}
+  leftHudIcon: {fileID: 1247538618}
+  rightHudIcon: {fileID: 456322336}
+  leftInfoIcon: {fileID: 414125668}
+  rightInfoIcon: {fileID: 1298813422}
 --- !u!1 &786754266
 GameObject:
   m_ObjectHideFlags: 0

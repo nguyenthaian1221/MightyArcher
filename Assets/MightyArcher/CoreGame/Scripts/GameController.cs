@@ -1038,8 +1038,10 @@ public class GameController : MonoBehaviour
 
     public async void SaveCoinData()
     {
+
         var data = new Dictionary<string, object> { { "PlayerCoins", PlayerPrefs.GetInt("PlayerCoins") } };
         await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+
     }
 
 

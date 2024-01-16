@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useHelper: 1
-  baseShootPower: 30
+  baseShootPower: 35
   playerHealth: 100
   arrow: {fileID: 1137189657148240, guid: 808db0ec150e04e43b860050ea34e1f0, type: 3}
   trajectoryHelper: {fileID: 1998247080557476, guid: 033fb2465a1042e4bbb9aa036a66d903, type: 3}

@@ -17,8 +17,8 @@ MonoBehaviour:
     characterSprite: {fileID: 21300000, guid: 55e9acbeab7f719409b42fed00f42d61, type: 3}
     charID: 1
     isOwned: 1
-    charLeft: {fileID: 1210408377191846, guid: 566c0470229790f41aa32bacd9895e46, type: 3}
-    charRight: {fileID: 1092056429115338, guid: 4a66f4f9424e60149a2de4efba40e41e, type: 3}
+    charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
+    charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: bf7ca1208c09e614f90edad5ec8abc6e, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: 839f35864e8b3ad4c9c4b9d09150b01b, type: 3}
     iconleft: {fileID: 2100000, guid: 7e40f7548693cea449d15d31161e12d4, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     characterSprite: {fileID: 21300000, guid: c65618d34ff72e84a8b6e7cf0c5ff353, type: 3}
     charID: 2
     isOwned: 1
-    charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
-    charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
+    charLeft: {fileID: 1210408377191846, guid: 50cf03cca9f482f429e7028ddb12bf33, type: 3}
+    charRight: {fileID: 1092056429115338, guid: e805d34336ffc714da2836a5e185a6e3, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: be2527ed86489a2418c0337e5d9a1262, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: f29edd77b1435024f9c4cb5d07f99edd, type: 3}
     iconleft: {fileID: 2100000, guid: 527b84c7869b91f4c93a710ee28a9189, type: 2}
@@ -43,8 +43,8 @@ MonoBehaviour:
     characterSprite: {fileID: 21300000, guid: 2b2ac122aed35094c8da44f2697b3160, type: 3}
     charID: 3
     isOwned: 0
-    charLeft: {fileID: 1210408377191846, guid: d3da435ca84ca4c4085ddd386fbdb490, type: 3}
-    charRight: {fileID: 1092056429115338, guid: 13642f83c0228f24381dc9156af458d9, type: 3}
+    charLeft: {fileID: 1210408377191846, guid: 47c2f0cc57cfad24d8fe4c72e6430143, type: 3}
+    charRight: {fileID: 1092056429115338, guid: b3d713fd725687c468338ba62a593fe4, type: 3}
     charLeftOffline: {fileID: 1210408377191846, guid: d15979866b1276a48b29f02468985cd3, type: 3}
     charRightOffline: {fileID: 1092056429115338, guid: 12b363ebb971986439440dee60f20316, type: 3}
     iconleft: {fileID: 2100000, guid: 260dd5059b9694645b4fff6912683e5a, type: 2}

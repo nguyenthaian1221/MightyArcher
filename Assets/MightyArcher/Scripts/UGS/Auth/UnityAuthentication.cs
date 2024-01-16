@@ -231,8 +231,14 @@ public class UnityAuthentication : MonoBehaviour
     // Sign In as guest
     public async void OnSignInAsGuest()
     {
+
         await SignInAnonymouslyAsync();
         Debug.Log(AuthenticationService.Instance.IsSignedIn);
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            SceneManager.LoadScene("Menu");
+        }
+
     }
 
     // Register account
@@ -295,13 +301,16 @@ public class UnityAuthentication : MonoBehaviour
 
     public async void SaveData()
     {
-        var data = new Dictionary<string, object> { { "keyName", "value" } };
-        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+
+            var data = new Dictionary<string, object> { { "keyName", "value" } };
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+    
     }
 
 
     public async void LoadData()
     {
+
         #region manage all key 
         HashSet<string> listofkeys = new HashSet<string>();
         listofkeys.Add("PlayerCoins");
@@ -338,7 +347,7 @@ public class UnityAuthentication : MonoBehaviour
 
             if (playerData.TryGetValue(character.characterName, out var namechar))
             {
-               
+
                 PlayerPrefs.SetInt(character.characterName, namechar.Value.GetAs<int>());
             }
             else
@@ -350,6 +359,8 @@ public class UnityAuthentication : MonoBehaviour
 
         SceneManager.LoadScene("Menu");
     }
+
+
 
 
 }

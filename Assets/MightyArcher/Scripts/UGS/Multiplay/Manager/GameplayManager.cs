@@ -34,6 +34,10 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
 
     // HP UI
 
+
+
+
+
     private void OnEnable()
     {
         if (!IsServer)
@@ -210,7 +214,11 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
                                 m_startingPositions[0].position,
                                 data.clientId,
                                 true);
-                   }
+
+     
+
+
+                    }
                    else if (data.playerId == 1)
                     {
                         GameObject playerRight =
@@ -219,13 +227,21 @@ public class GameplayManager : SingletonNetwork<GameplayManager>
                                m_startingPositions[5].position,
                                data.clientId,
                                true);
+
+
                     }
                 }
 
                
             }
+
+        
+
         }
     }
+
+
+    // Set icon label 
 
 
 
