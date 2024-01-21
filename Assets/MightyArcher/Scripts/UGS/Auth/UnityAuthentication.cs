@@ -9,6 +9,9 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Unity.Services.CloudSave;
 using Unity.Services.CloudSave.Models;
+using UnityEngine.Networking;
+using UnityEngine.Rendering;
+using System;
 
 public class UnityAuthentication : MonoBehaviour
 {
@@ -231,14 +234,18 @@ public class UnityAuthentication : MonoBehaviour
     // Sign In as guest
     public async void OnSignInAsGuest()
     {
-
-        await SignInAnonymouslyAsync();
-        Debug.Log(AuthenticationService.Instance.IsSignedIn);
-        if (Application.internetReachability == NetworkReachability.NotReachable)
+        //await SignInAnonymouslyAsync();
+        StartCoroutine(CheckInternetConnection(async isConnected =>
         {
-            SceneManager.LoadScene("Menu");
-        }
-
+            if (isConnected)
+            {
+                await SignInAnonymouslyAsync();
+            }
+            else
+            {
+                SceneManager.LoadScene("Menu");
+            }
+        }));
     }
 
     // Register account
@@ -302,9 +309,9 @@ public class UnityAuthentication : MonoBehaviour
     public async void SaveData()
     {
 
-            var data = new Dictionary<string, object> { { "keyName", "value" } };
-            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-    
+        var data = new Dictionary<string, object> { { "keyName", "value" } };
+        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+
     }
 
 
@@ -361,6 +368,21 @@ public class UnityAuthentication : MonoBehaviour
     }
 
 
+    IEnumerator CheckInternetConnection(Action<bool> action)
+    {
 
+        UnityWebRequest request = new UnityWebRequest("http://google.com");
+        yield return request.SendWebRequest();
+        if (request.error != null)
+        {
+            Debug.Log("Error");
+            action(false);
+        }
+        else
+        {
+            Debug.Log("Success");
+            action(true);
+        }
+    }
 
 }
