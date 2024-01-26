@@ -177,8 +177,8 @@ public class MainLauncherController : MonoBehaviour
         Vector3 target = playerLeft.transform.position;
 
         // get distance
-        float dist = Vector3.Distance(pos, target);
-
+        //float dist = Vector3.Distance(pos, target);
+        float dist = Mathf.Abs(pos.x - target.x);
         // calculate initival velocity required for the arrow to move through distance
         float Vi = Mathf.Sqrt(dist * -Physics.gravity.y / (Mathf.Sin(Mathf.Deg2Rad * enemyShootAngle * 1.05f)));
         float Vy, Vx;

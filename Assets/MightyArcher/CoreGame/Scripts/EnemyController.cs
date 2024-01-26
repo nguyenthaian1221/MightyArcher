@@ -16,7 +16,7 @@ public class EnemyController : MonoBehaviour
 
     [Header("Public GamePlay settings")]
     public int enemyHealth = 100;                   //initial (full) health. can be edited.
-    private float baseShootAngle = 61.5f;           //Very important! - avoid editing this value! (it has been calculated based on the size/shape/weight of the arrow)
+    private float baseShootAngle = 62f;           //Very important! - avoid editing this value! (it has been calculated based on the size/shape/weight of the arrow)
     private float shootAngleError = 0;              //We use this to give some erros to enemy shoots. Setting this to 0 will results in accurate shoots
     public static float fakeWindPower = 0;              //We use this if we need to add more randomness to enemy shots.
     internal int enemyCurrentHealth;                //not editable.
